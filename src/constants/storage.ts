@@ -1,0 +1,1 @@
+export const ACCESS_TOKEN = 'EKYLP:ACCESS_TOKEN'
