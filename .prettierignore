@@ -1,0 +1,4 @@
+.eslint.js
+package.json
+*.config.js
+*.json
