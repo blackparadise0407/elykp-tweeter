@@ -10,7 +10,7 @@ const HomePage = lazy(() => import('features/tweet/HomePage'))
 
 function App() {
     const navigate = useNavigate()
-    const { data, loading, error } = useCurrentUserQuery()
+    const { error } = useCurrentUserQuery()
 
     useEffect(() => {
         if (error) {

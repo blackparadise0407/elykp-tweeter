@@ -18,7 +18,7 @@ export interface LoginForm {
 
 export default function LoginForm() {
     const navigate = useNavigate()
-    const [loginMutation, { error, loading }] = useMutation<
+    const [loginMutation, { loading }] = useMutation<
         { login: { accessToken: string; user: any } },
         { loginInput: LoginForm }
     >(LOGIN_MUTATION)
