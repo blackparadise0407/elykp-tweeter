@@ -7,7 +7,8 @@ type HTMLType = 'button' | 'submit' | 'reset' | undefined
 
 type ButtonType = 'primary' | 'secondary' | 'link'
 
-interface ButtonProps extends Omit<HTMLProps<HTMLButtonElement>, 'onClick'> {
+interface ButtonProps
+    extends Omit<HTMLProps<HTMLButtonElement>, 'onClick' | 'classID'> {
     htmlType?: HTMLType
     children?: ReactNode
     icon?: ReactNode
@@ -24,7 +25,7 @@ const getStyleFromType = (type: ButtonType) => {
         case 'secondary':
             return 'border-blue-500 hover:bg-blue-50 text-blue-500'
         case 'link':
-            return 'bg-transparent hover:bg-gray-50 text-black hover:underline'
+            return 'bg-transparent hover:bg-gray-100 dark:hover:bg-neutral-700 text-black'
         default:
             return ''
     }
@@ -38,16 +39,18 @@ export default memo(function Button({
     loading = false,
     type = 'primary',
     disabled,
+    className,
     onClick,
     ...rest
 }: ButtonProps) {
     return (
         <button
             className={clsx(
-                'flex items-center justify-center gap-3 p-2 font-medium border border-transparent rounded-lg select-none transition-all',
+                'flex items-center justify-center gap-3 py-2 px-6 font-medium border border-transparent rounded-lg select-none transition-all',
                 block && 'w-full block',
                 getStyleFromType(type),
                 disabled && 'opacity-80 pointer-events-none',
+                className,
             )}
             type={htmlType as any}
             onClick={onClick}

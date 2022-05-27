@@ -17,5 +17,22 @@
     },
     "home": "home",
     "explore": "explore",
-    "bookmarks": "bookmarks"
+    "bookmarks": "bookmarks",
+    "tweet_something": "Tweet something",
+    "what_happening": "What's happening?",
+    "everyone_can_reply": "Everyone can reply",
+    "who_can_reply": "Who can reply?",
+    "choose_who_can_reply_to_this_tweet": "Choose who can reply to this Tweet",
+    "everyone": "Everyone",
+    "people_you_follow": "People you follow",
+    "tweet": "Tweet",
+    "comment": "comment",
+    "retweet": "retweet",
+    "like": "like",
+    "save": "save",
+    "tweet_your_reply": "Tweet your reply",
+    "tweets": "Tweets",
+    "trend_for_you": "Trend for you",
+    "who_to_follow": "Who to follow",
+    "fetching_new_tweets": "Fetching new tweets..."
 }

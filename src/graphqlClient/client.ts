@@ -1,4 +1,9 @@
-import { ApolloClient, createHttpLink, InMemoryCache } from '@apollo/client'
+import {
+    ApolloClient,
+    createHttpLink,
+    InMemoryCache,
+    Reference,
+} from '@apollo/client'
 import { setContext } from '@apollo/client/link/context'
 
 import { ACCESS_TOKEN } from 'constants/storage'
@@ -19,5 +24,28 @@ const authLink = setContext((_, { headers }) => {
 
 export const client = new ApolloClient({
     link: authLink.concat(httpLink),
-    cache: new InMemoryCache(),
+    cache: new InMemoryCache({
+        typePolicies: {
+            Query: {
+                fields: {
+                    getTweet: {
+                        keyArgs: false,
+                        merge(existing, incoming) {
+                            let tweets: Reference[] = []
+                            if (existing && existing.tweets) {
+                                tweets = tweets.concat(existing.tweets)
+                            }
+                            if (incoming && incoming.tweets) {
+                                tweets = tweets.concat(incoming.tweets)
+                            }
+                            return {
+                                ...incoming,
+                                tweets,
+                            }
+                        },
+                    },
+                },
+            },
+        },
+    }),
 })

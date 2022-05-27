@@ -17,7 +17,7 @@ export interface RegisterForm {
 }
 
 export default function RegisterForm() {
-    const [registerMutation, { loading, data, error }] = useMutation<{
+    const [registerMutation, { loading }] = useMutation<{
         register: string
     }>(REGISTER_MUTATION)
     const { t } = useTranslation()
@@ -77,7 +77,7 @@ export default function RegisterForm() {
                 error={errors.confirmPassword?.message}
             />
 
-            <Button block type="primary">
+            <Button loading={loading} disabled={loading} block type="primary">
                 {t('start_coding_now')}
             </Button>
         </form>

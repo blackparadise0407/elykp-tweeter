@@ -4,12 +4,9 @@ import NavBar from './NavBar'
 
 export default function MainLayout() {
     return (
-        <div>
+        <div className="min-h-screen bg-neutral-100 dark:bg-neutral-700">
             <NavBar />
-            Main layout
-            <main>
-                <Outlet />
-            </main>
+            <Outlet />
         </div>
     )
 }

@@ -2,6 +2,8 @@ import clsx from 'clsx'
 import { useTranslation } from 'react-i18next'
 import { NavLink } from 'react-router-dom'
 
+import { useCurrentUserQuery } from 'hooks/useCurrentUserQuery'
+
 const items = [
     { to: '/', transKey: 'home' },
     { to: '/explore', transKey: 'explore' },
@@ -10,8 +12,10 @@ const items = [
 
 export default function NavBar() {
     const { t } = useTranslation()
+    const { data, loading } = useCurrentUserQuery()
+
     return (
-        <nav className="bg-white dark:bg-zinc-800 text-black dark:text-white px-20 flex items-center">
+        <nav className="bg-white dark:bg-neutral-800 text-black dark:text-white px-20 flex items-center">
             <p className="font-semibold justify-self-start py-5">
                 ElykP Tweeter
             </p>
@@ -20,7 +24,7 @@ export default function NavBar() {
                     <NavLink
                         className={({ isActive }) =>
                             clsx(
-                                'relative capitalize h-full w-20 flex justify-center items-center text-stone-500 dark:text-white',
+                                'relative capitalize h-full w-20 font-medium text-sm flex justify-center items-center text-stone-500 dark:text-white',
                                 isActive && 'text-blue-500 dark:text-blue-400',
                             )
                         }
@@ -38,7 +42,14 @@ export default function NavBar() {
                     </NavLink>
                 ))}
             </div>
-            <div className="justify-self-end py-5">User</div>
+            <div className="flex items-center gap-3 justify-self-end py-5">
+                <img
+                    className="w-8 h-8 rounded-lg"
+                    src="https://i.pravatar.cc/32"
+                    alt=""
+                />
+                <h6>{data?.currentUser.username}</h6>
+            </div>
         </nav>
     )
 }

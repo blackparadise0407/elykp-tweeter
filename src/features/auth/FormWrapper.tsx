@@ -19,7 +19,7 @@ export default function FormWrapper({ title }: FormWrapperProps) {
     const isLogin = useMemo(() => pathname.endsWith('/login'), [pathname])
 
     return (
-        <div className="p-5 md:py-14 md:px-16 max-w-[473px] w-full rounded-xl md:border border-gray-300 space-y-5">
+        <div className="p-5 md:py-14 md:px-16 max-w-[473px] w-full rounded-xl md:border border-gray-300 dark:border-neutral-600 space-y-5">
             <h6 className="text-xs text-black dark:text-white">
                 ElykP Tweeter
             </h6>

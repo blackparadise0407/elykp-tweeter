@@ -1,3 +1,5 @@
 export * from './TextField'
 export * from './Button'
 export * from './Spinner'
+export * from './Avatar'
+export * from './Card'

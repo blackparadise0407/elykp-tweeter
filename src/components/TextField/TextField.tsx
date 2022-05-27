@@ -22,7 +22,7 @@ const TextField = forwardRef(
                     </label>
                 )}
                 <div
-                    className="flex items-center bg-transparent border border-gray-300 rounded-lg overflow-hidden text-sm md:text-base font-medium
+                    className="flex items-center bg-transparent border border-gray-300 dark:border-neutral-600 rounded-lg overflow-hidden text-sm md:text-base font-medium
                            placeholder:text-gray-300"
                 >
                     {icon && (
