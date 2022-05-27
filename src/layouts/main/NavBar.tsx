@@ -12,14 +12,14 @@ const items = [
 
 export default function NavBar() {
     const { t } = useTranslation()
-    const { data, loading } = useCurrentUserQuery()
+    const { data } = useCurrentUserQuery()
 
     return (
-        <nav className="bg-white dark:bg-neutral-800 text-black dark:text-white px-20 flex items-center">
+        <nav className="bg-white dark:bg-neutral-800 text-black dark:text-white px-2 md:px-10 lg:px-20 flex justify-between items-center">
             <p className="font-semibold justify-self-start py-5">
                 ElykP Tweeter
             </p>
-            <div className="flex mx-auto self-stretch items-center gap-20">
+            <div className="mx-auto self-stretch items-center hidden md:flex gap-10 lg:gap-20">
                 {items.map(({ to, transKey }) => (
                     <NavLink
                         className={({ isActive }) =>

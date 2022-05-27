@@ -10,7 +10,7 @@ import { useCurrentUserQuery } from 'hooks/useCurrentUserQuery'
 
 export default function TweetInput() {
     const { t } = useTranslation()
-    const [createTweet, { data, loading, error }] = useCreateTweetMutation()
+    const [createTweet, { loading }] = useCreateTweetMutation()
     const { data: userData } = useCurrentUserQuery()
     const [val, setVal] = useState('')
 
@@ -65,7 +65,7 @@ export default function TweetInput() {
                     />
                     <div className="flex items-center gap-3">
                         <AiOutlinePicture className="cursor-pointer text-lg text-blue-500" />
-                        <div className="relative max-w-[234px] w-full">
+                        <div className="relative max-w-[140px] sm:max-w-[200px] md:max-w-[234px] w-full">
                             <div className="flex items-center gap-1 cursor-pointer text-blue-500 peer">
                                 <MdPublic className="text-lg" />
                                 <span className="font-medium text-xs">
@@ -73,8 +73,8 @@ export default function TweetInput() {
                                 </span>
                             </div>
                             <div
-                                className="absolute hidden top-[calc(100%+15px)] left-0 px-3 py-2 bg-white dark:bg-neutral-800 shadow border border-gray-200 dark:hover:border-neutral-700  rounded-lg 
-                                before:content-[''] before:absolute before:w-full before:h-[15px] before:opacity-0 before:bottom-full before:left-0
+                                className="absolute hidden top-[calc(100%+15px)] left-0 px-3 py-2 bg-white dark:bg-neutral-800 shadow border border-gray-200 dark:border-neutral-700  rounded-lg 
+                                before:content-[''] before:absolute before:w-full before:h-[20px] before:opacity-0 before:bottom-full before:left-0
                                 peer-hover:block hover:block
                             "
                             >

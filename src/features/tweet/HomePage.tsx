@@ -58,7 +58,7 @@ export default function HomePage() {
     }, [])
 
     return (
-        <div className="container mx-auto py-6 flex gap-6">
+        <div className="container px-2 md:px-10 lg:px-20 mx-auto py-6 flex gap-6 ">
             <div className="flex-grow">
                 <TweetInput />
                 <div className="mt-6 space-y-6" ref={tweetListRef}>
@@ -77,7 +77,7 @@ export default function HomePage() {
                     )}
                 </div>
             </div>
-            <div className="sticky top-6 max-w-[306px] w-full h-fit space-y-6">
+            <div className="sticky hidden md:block top-6 max-w-[306px] w-full h-fit space-y-6">
                 <Card title={t('trend_for_you')}>
                     <div className="my-3 space-y-6">
                         {topTweetedTagCount?.getTopTweetedTagCount.map(

@@ -11,11 +11,11 @@ interface AvatarProps {
 const getClassFromSize = (s: AvatarSize) => {
     switch (s) {
         case 'base':
-            return 'w-10 h-10'
+            return 'w-8 h-8 md:w-10 md:h-10'
         case 'lg':
-            return 'w-12 h-12'
+            return 'w-10 h-10 md:w-12 md:h-12'
         case 'sm':
-            return 'w-8 h-8'
+            return 'w-4 h-4 md:w-6 md:h-6'
     }
 }
 

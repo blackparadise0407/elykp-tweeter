@@ -69,5 +69,5 @@ select:-webkit-autofill:focus {
 }
 
 .textarea {
-  @apply resize-none w-full focus:outline-none placeholder:text-base placeholder:text-gray-400;
+  @apply resize-none w-full focus:outline-none text-sm md:text-base placeholder:text-sm md:placeholder:text-base placeholder:text-gray-400;
 }
