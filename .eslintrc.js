@@ -36,6 +36,7 @@ module.exports = {
         'react/display-name': 'off',
         'import/no-named-as-default': 'off',
         'no-empty': ['error', { allowEmptyCatch: true }],
+        '@typescript-eslint/no-empty-function': 'warn',
         'import/no-named-as-default-member': 'off',
         'prettier/prettier': [
             'error',

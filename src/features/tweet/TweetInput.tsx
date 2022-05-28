@@ -1,18 +1,27 @@
-import { KeyboardEventHandler, useState } from 'react'
+import {
+    ChangeEventHandler,
+    KeyboardEventHandler,
+    useRef,
+    useState,
+} from 'react'
 import { useTranslation } from 'react-i18next'
 import { AiOutlinePicture } from 'react-icons/ai'
 import { MdGroup, MdPublic } from 'react-icons/md'
 import ReactTextareaAutosize from 'react-textarea-autosize'
 
 import { Button, Card } from 'components'
+import { isUnderLimitSize, isValidMimeType } from 'helpers/file'
 import { useCreateTweetMutation } from 'hooks/useCreateTweetMutation'
 import { useCurrentUserQuery } from 'hooks/useCurrentUserQuery'
+import { useUploadFileMutation } from 'hooks/useUploadFileMutation'
 
 export default function TweetInput() {
     const { t } = useTranslation()
     const [createTweet, { loading }] = useCreateTweetMutation()
+    const [uploadFileMutation, { data: fileData }] = useUploadFileMutation()
     const { data: userData } = useCurrentUserQuery()
     const [val, setVal] = useState('')
+    const fileInputRef = useRef<HTMLInputElement>(null)
 
     const handleCreateTweet = async () => {
         if (userData?.currentUser) {
@@ -45,6 +54,41 @@ export default function TweetInput() {
         }
     }
 
+    const handleOpenInput = () => {
+        if (fileInputRef.current) {
+            fileInputRef.current.click()
+        }
+    }
+
+    const handleFileChange: ChangeEventHandler<HTMLInputElement> = async (
+        e,
+    ) => {
+        const { files } = e.target
+        if (files?.length && userData?.currentUser) {
+            const file = files[0]
+            if (!isValidMimeType(file)) {
+                console.log('Invalid file type')
+                return
+            }
+            if (!isUnderLimitSize(file)) {
+                console.log('File is too large')
+                return
+            }
+            try {
+                await uploadFileMutation({
+                    variables: {
+                        fileUploadInput: {
+                            file,
+                            userId: userData.currentUser.id,
+                        },
+                    },
+                })
+            } catch (error) {}
+        }
+    }
+
+    console.log(fileData?.uploadFile?.id)
+
     return (
         <Card title={t('tweet_something')}>
             <div className="flex gap-3">
@@ -55,7 +99,7 @@ export default function TweetInput() {
                 />
                 <div className="flex-grow">
                     <ReactTextareaAutosize
-                        className="textarea bg-white dark:bg-neutral-800 text-dark dark:text-white"
+                        className="textarea bg-white dark:bg-neutral-800 text-black dark:text-white"
                         maxRows={5}
                         minRows={2}
                         placeholder={t('what_happening')}
@@ -63,8 +107,23 @@ export default function TweetInput() {
                         onKeyDown={handleKeyDown}
                         onChange={(e) => setVal(e.target.value)}
                     />
+                    {fileData?.uploadFile?.id && (
+                        <img
+                            src={`http://localhost:5000/api/attachment/${fileData?.uploadFile.id}`}
+                            alt=""
+                        />
+                    )}
                     <div className="flex items-center gap-3">
-                        <AiOutlinePicture className="cursor-pointer text-lg text-blue-500" />
+                        <div onClick={handleOpenInput}>
+                            <input
+                                ref={fileInputRef}
+                                type="file"
+                                className="hidden"
+                                onChange={handleFileChange}
+                                accept="image/jpeg,image/png"
+                            />
+                            <AiOutlinePicture className="cursor-pointer text-lg text-blue-500" />
+                        </div>
                         <div className="relative max-w-[140px] sm:max-w-[200px] md:max-w-[234px] w-full">
                             <div className="flex items-center gap-1 cursor-pointer text-blue-500 peer">
                                 <MdPublic className="text-lg" />

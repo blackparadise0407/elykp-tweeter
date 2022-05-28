@@ -19,6 +19,13 @@ declare global {
         afterCursor: string | null
         beforeCursor: string | null
     }
+
+    interface Attachment {
+        id: string
+        path: string
+        mimetype: string
+        encoding: string
+    }
 }
 
 export {}

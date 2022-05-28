@@ -46,7 +46,6 @@ export default function NavBar() {
                 <img
                     className="w-8 h-8 rounded-lg"
                     src="https://i.pravatar.cc/32"
-                    alt=""
                 />
                 <h6>{data?.currentUser.username}</h6>
             </div>

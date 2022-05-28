@@ -24,6 +24,7 @@ function App() {
                 <Route index element={<HomePage />} />
                 <Route path="explore" element={<>Explore</>} />
                 <Route path="bookmarks" element={<>Bookmarks</>} />
+                <Route path=":username" element={<>profile page</>} />
             </Route>
             <Route element={<AuthLayout />}>
                 <Route path="register" element={<FormWrapper />} />

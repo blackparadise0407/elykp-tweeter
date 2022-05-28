@@ -3,6 +3,7 @@ import { memo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { AiOutlineSync } from 'react-icons/ai'
 import { BsChatRight, BsHeart, BsBookmark } from 'react-icons/bs'
+import { Link } from 'react-router-dom'
 import ReactTextareaAutosize from 'react-textarea-autosize'
 
 import { Avatar, Button } from 'components'
@@ -22,8 +23,13 @@ export default memo(function Tweet({ data }: TweetProps) {
             <div className="flex items-center gap-4">
                 <Avatar />
                 <div className="flex flex-col">
-                    <span className="font-medium text-base text-dark dark:text-white">
-                        {user.username}
+                    <span className="">
+                        <Link
+                            to={`/${user.username}`}
+                            className="font-medium text-base text-black hover:text-black dark:text-white hover:dark:text-white hover:underline cursor-pointer"
+                        >
+                            {user.username}
+                        </Link>
                     </span>
                     <span className="font-medium text-xs text-gray-400">
                         {dayjs(updatedAt).format('DD MMMM [at] HH:mm')}
