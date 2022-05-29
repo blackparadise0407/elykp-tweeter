@@ -11,8 +11,15 @@ declare global {
         id: number
         text: string
         user: User
+        photo: Attachment
+        tags: Tag[]
         createdAt: Date
         updatedAt: date
+    }
+
+    interface Tag {
+        id: number
+        name: string
     }
 
     interface Cursor {

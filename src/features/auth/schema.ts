@@ -4,7 +4,9 @@ import { LoginForm } from './LoginForm'
 import { RegisterForm } from './RegisterForm'
 
 export const registerSchema: SchemaOf<RegisterForm> = object().shape({
-    email: string().email().required('validation.email_require'),
+    email: string()
+        .email('validation.email_must_be_valid_email')
+        .required('validation.email_require'),
     username: string().required('validation.username_require'),
     password: string().required('validation.password_require'),
     // .matches(

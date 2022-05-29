@@ -13,6 +13,8 @@ export const useCreateTweetMutation = () =>
             createTweetInput: {
                 userId: string
                 text: string
+                photoId?: string
+                tags: string[]
             }
         }
     >(CREATE_TWEET_MUTATION, {

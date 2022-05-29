@@ -11,3 +11,13 @@ export const CURRENT_USER_QUERY = gql`
         }
     }
 `
+
+export const GET_USER_QUERY = gql`
+    query GetUser($username: String!) {
+        getUser(username: $username) {
+            id
+            username
+            email
+        }
+    }
+`

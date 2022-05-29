@@ -1,8 +1,10 @@
 import { throttle } from 'lodash'
 import { useEffect, useMemo, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
+import { Link } from 'react-router-dom'
 
 import { Card, Spinner } from 'components'
+import { cache } from 'graphqlClient'
 import { useEventListener } from 'hooks/useEventListener'
 import { useGetTopTweetedTagCountQuery } from 'hooks/useGetTopTweetedTagCountQuery'
 import { useGetTweetQuery } from 'hooks/useGetTweetQuery'
@@ -10,11 +12,11 @@ import { useGetTweetQuery } from 'hooks/useGetTweetQuery'
 import Tweet from './Tweet'
 import TweetInput from './TweetInput'
 
-const FETCH_LIMIT = 10
+const FETCH_LIMIT = 3
 
 export default function HomePage() {
     const { t } = useTranslation()
-    const { data, loading, client, fetchMore } = useGetTweetQuery({
+    const { data, loading, fetchMore } = useGetTweetQuery({
         limit: FETCH_LIMIT,
         beforeCursor: null,
         afterCursor: null,
@@ -53,7 +55,10 @@ export default function HomePage() {
 
     useEffect(() => {
         return () => {
-            client.clearStore()
+            cache.evict({
+                id: 'ROOT_QUERY',
+                fieldName: 'getTweet',
+            })
         }
     }, [])
 
@@ -70,30 +75,38 @@ export default function HomePage() {
                     {loading && (
                         <div className="flex items-center justify-center gap-2">
                             <Spinner />
-                            <span className="font-medium text-sm text-gray-500">
+                            <span className="font-medium text-sm text-gray-500 dark:text-white">
                                 {t('fetching_new_tweets')}
                             </span>
                         </div>
                     )}
                 </div>
             </div>
-            <div className="sticky hidden md:block top-6 max-w-[306px] w-full h-fit space-y-6">
-                <Card title={t('trend_for_you')}>
-                    <div className="my-3 space-y-6">
-                        {topTweetedTagCount?.getTopTweetedTagCount.map(
-                            ({ id, name, count }) => (
-                                <div className="flex flex-col gap-2" key={id}>
-                                    <span className="font-semibold text-neutral-900 dark:text-white text-base hover:underline inline-block cursor-pointer hover:text-neutral-500 transition-colors">
-                                        #{name}
-                                    </span>
-                                    <span className="font-medium text-neutral-400 text-xs">
-                                        {count} {t('tweets')}
-                                    </span>
-                                </div>
-                            ),
-                        )}
-                    </div>
-                </Card>
+            <div className="sticky hidden md:block top-6 max-w-[306px] md:max-w-[406px] w-full h-fit space-y-6">
+                {!!topTweetedTagCount?.getTopTweetedTagCount.length && (
+                    <Card title={t('trend_for_you')}>
+                        <div className="my-3 space-y-6">
+                            {topTweetedTagCount?.getTopTweetedTagCount.map(
+                                ({ id, name, count }) => (
+                                    <div
+                                        className="flex flex-col gap-2"
+                                        key={id}
+                                    >
+                                        <Link
+                                            to={`/hashtag/${name}`}
+                                            className="font-semibold text-neutral-900 dark:text-white text-base hover:underline inline-block cursor-pointer hover:text-neutral-500 transition-colors"
+                                        >
+                                            #{name}
+                                        </Link>
+                                        <span className="font-medium text-neutral-400 text-xs">
+                                            {count} {t('tweets')}
+                                        </span>
+                                    </div>
+                                ),
+                            )}
+                        </div>
+                    </Card>
+                )}
                 <Card title={t('who_to_follow')}></Card>
             </div>
         </div>

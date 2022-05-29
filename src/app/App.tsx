@@ -7,6 +7,8 @@ import { AuthLayout } from 'layouts/auth'
 import { MainLayout } from 'layouts/main'
 
 const HomePage = lazy(() => import('features/tweet/HomePage'))
+const ProfilePage = lazy(() => import('features/user/ProfilePage'))
+const NotFoundPage = lazy(() => import('features/common/NotFoundPage'))
 
 function App() {
     const navigate = useNavigate()
@@ -24,13 +26,14 @@ function App() {
                 <Route index element={<HomePage />} />
                 <Route path="explore" element={<>Explore</>} />
                 <Route path="bookmarks" element={<>Bookmarks</>} />
-                <Route path=":username" element={<>profile page</>} />
+                <Route path="hashtag/:name" element={<>Hashtag name</>} />
+                <Route path=":username" element={<ProfilePage />} />
             </Route>
             <Route element={<AuthLayout />}>
                 <Route path="register" element={<FormWrapper />} />
                 <Route path="login" element={<FormWrapper title="Login" />} />
             </Route>
-            <Route path="*" element={<div>Not found...</div>} />
+            <Route path="*" element={<NotFoundPage />} />
         </Routes>
     )
 }

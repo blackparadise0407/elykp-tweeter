@@ -8,3 +8,9 @@ export const UPLOAD_FILE_MUTATION = gql`
         }
     }
 `
+
+export const DELETE_FILE_MUTATION = gql`
+    mutation DeleteFileMutation($attachmentId: String!) {
+        deleteFile(attachmentId: $attachmentId)
+    }
+`

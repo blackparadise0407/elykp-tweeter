@@ -5,35 +5,44 @@ import {
     useState,
 } from 'react'
 import { useTranslation } from 'react-i18next'
-import { AiOutlinePicture } from 'react-icons/ai'
+import { AiOutlineDelete, AiOutlinePicture } from 'react-icons/ai'
 import { MdGroup, MdPublic } from 'react-icons/md'
 import ReactTextareaAutosize from 'react-textarea-autosize'
 
 import { Button, Card } from 'components'
 import { isUnderLimitSize, isValidMimeType } from 'helpers/file'
+import { extractTags } from 'helpers/string'
 import { useCreateTweetMutation } from 'hooks/useCreateTweetMutation'
 import { useCurrentUserQuery } from 'hooks/useCurrentUserQuery'
+import { useDeleleteFileMutation } from 'hooks/useDeleteFileMutation'
 import { useUploadFileMutation } from 'hooks/useUploadFileMutation'
 
 export default function TweetInput() {
     const { t } = useTranslation()
     const [createTweet, { loading }] = useCreateTweetMutation()
     const [uploadFileMutation, { data: fileData }] = useUploadFileMutation()
+    const [deleteFileMutation] = useDeleleteFileMutation()
     const { data: userData } = useCurrentUserQuery()
     const [val, setVal] = useState('')
     const fileInputRef = useRef<HTMLInputElement>(null)
 
+    const [tempFile, setTempFile] = useState('')
+
     const handleCreateTweet = async () => {
-        if (userData?.currentUser) {
+        if (userData?.currentUser && val) {
+            const tags = (extractTags(val) ?? []).map((tag) => tag.substring(1))
             try {
                 await createTweet({
                     variables: {
                         createTweetInput: {
                             text: val,
                             userId: userData.currentUser.id,
+                            photoId: tempFile ?? undefined,
+                            tags,
                         },
                     },
                 })
+                setTempFile('')
                 setVal('')
             } catch (e) {}
         }
@@ -75,7 +84,7 @@ export default function TweetInput() {
                 return
             }
             try {
-                await uploadFileMutation({
+                const { data } = await uploadFileMutation({
                     variables: {
                         fileUploadInput: {
                             file,
@@ -83,11 +92,21 @@ export default function TweetInput() {
                         },
                     },
                 })
+                if (data?.uploadFile) {
+                    setTempFile(data.uploadFile.id)
+                }
             } catch (error) {}
         }
     }
 
-    console.log(fileData?.uploadFile?.id)
+    const handleClearFile = async () => {
+        if (fileData?.uploadFile) {
+            setTempFile('')
+            await deleteFileMutation({
+                variables: { attachmentId: fileData?.uploadFile.id },
+            })
+        }
+    }
 
     return (
         <Card title={t('tweet_something')}>
@@ -107,11 +126,21 @@ export default function TweetInput() {
                         onKeyDown={handleKeyDown}
                         onChange={(e) => setVal(e.target.value)}
                     />
-                    {fileData?.uploadFile?.id && (
-                        <img
-                            src={`http://localhost:5000/api/attachment/${fileData?.uploadFile.id}`}
-                            alt=""
-                        />
+                    {tempFile && (
+                        <div
+                            className="relative my-5 w-full aspect-video rounded-lg"
+                            style={{
+                                background: `url(http://localhost:5000/api/attachment/${tempFile}) center no-repeat`,
+                                backgroundSize: 'cover',
+                            }}
+                        >
+                            <div
+                                className="absolute top-3 right-3 rounded-full bg-white p-1 shadow hover:-translate-y-0.5 cursor-pointer transition-all"
+                                onClick={handleClearFile}
+                            >
+                                <AiOutlineDelete className="text-xl text-red-500" />
+                            </div>
+                        </div>
                     )}
                     <div className="flex items-center gap-3">
                         <div onClick={handleOpenInput}>

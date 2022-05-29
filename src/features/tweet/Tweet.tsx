@@ -1,5 +1,5 @@
 import dayjs from 'dayjs'
-import { memo } from 'react'
+import React, { memo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { AiOutlineSync } from 'react-icons/ai'
 import { BsChatRight, BsHeart, BsBookmark } from 'react-icons/bs'
@@ -7,16 +7,36 @@ import { Link } from 'react-router-dom'
 import ReactTextareaAutosize from 'react-textarea-autosize'
 
 import { Avatar, Button } from 'components'
+import { HASHTAG_REGEXP } from 'helpers/string'
 
 interface TweetProps {
     data: Tweet
+}
+
+const _renderText = (text: string, tags: Tag[]) => {
+    if (!tags.length) {
+        return text
+    }
+    const splitText = text.split(HASHTAG_REGEXP)
+    const appendText: string[] = []
+    splitText.forEach((text) => {
+        const foundTag = tags.find((tag) => '#' + tag.name === text)
+        if (foundTag) {
+            appendText.push(
+                `<a href="/hashtag/${foundTag.name}">#${foundTag.name}</a>`,
+            )
+        } else {
+            appendText.push(text)
+        }
+    })
+    return appendText.join(' ')
 }
 
 export default memo(function Tweet({ data }: TweetProps) {
     const { t } = useTranslation()
     if (!data) return null
 
-    const { text, user, updatedAt } = data
+    const { text, tags, user, updatedAt, photo } = data
 
     return (
         <div className="bg-white dark:bg-neutral-800 p-5 rounded-lg shadow">
@@ -37,16 +57,23 @@ export default memo(function Tweet({ data }: TweetProps) {
                 </div>
             </div>
             <div className="mt-5">
-                <p className="text-neutral-600 dark:text-white text-sm md:text-base">
-                    {text}
-                </p>
-                {/* <img
-                    className="rounded-lg mt-5"
-                    src="https://images.unsplash.com/photo-1653580137336-8bf40907aba4?ixlib=rb-1.2.1&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=1470&q=80"
-                    alt=""
-                /> */}
+                <p
+                    dangerouslySetInnerHTML={{
+                        __html: _renderText(text, tags),
+                    }}
+                    className="text-neutral-600 dark:text-white text-sm md:text-base"
+                ></p>
+                {photo && (
+                    <div
+                        className="rounded-lg mt-5 w-full aspect-video"
+                        style={{
+                            background: `url(http://localhost:5000/api/attachment/${photo.id}) center no-repeat`,
+                            backgroundSize: 'cover',
+                        }}
+                    />
+                )}
             </div>
-            <ul className="flex items-center justify-end gap-4 text-gray-400 font-medium text-xs mt-3 mb-1">
+            <ul className="flex items-center justify-end gap-4 text-gray-400 font-medium text-xs md:text-sm mt-3 mb-1">
                 <li>499 Comments</li>
                 <li>59k Retweets</li>
                 <li>234 Saved</li>
