@@ -1,14 +1,14 @@
-import { throttle } from 'lodash'
 import { useEffect, useMemo, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
+import { AiOutlineCheckCircle } from 'react-icons/ai'
 import { Link } from 'react-router-dom'
 
 import { Card, Spinner } from 'components'
 import { cache } from 'graphqlClient'
-import { useEventListener } from 'hooks/useEventListener'
-import { useGetTopTweetedTagCountQuery } from 'hooks/useGetTopTweetedTagCountQuery'
-import { useGetTweetQuery } from 'hooks/useGetTweetQuery'
+import { useInfiniteScroll } from 'hooks/useInfiniteScroll'
 
+import { useGetTopTweetedTagCountQuery } from './hooks/useGetTopTweetedTagCountQuery'
+import { useGetTweetQuery } from './hooks/useGetTweetQuery'
 import Tweet from './Tweet'
 import TweetInput from './TweetInput'
 
@@ -29,29 +29,16 @@ export default function HomePage() {
         [data?.getTweet.cursor.afterCursor],
     )
 
-    useEventListener(
-        'scroll',
-        throttle(() => {
-            if (tweetListRef.current) {
-                const { offsetTop, clientHeight } = tweetListRef.current
-                const { scrollY, innerHeight } = window
-                if (
-                    offsetTop + clientHeight - (innerHeight + scrollY) <= 0 &&
-                    canFetchMore
-                ) {
-                    fetchMore({
-                        variables: {
-                            getTweetInput: {
-                                limit: FETCH_LIMIT,
-                                afterCursor:
-                                    data?.getTweet.cursor.afterCursor ?? null,
-                            },
-                        },
-                    })
-                }
-            }
-        }, 1000),
-    )
+    useInfiniteScroll(tweetListRef, loading, canFetchMore, () => {
+        fetchMore({
+            variables: {
+                getTweetInput: {
+                    limit: FETCH_LIMIT,
+                    afterCursor: data?.getTweet.cursor.afterCursor ?? null,
+                },
+            },
+        })
+    })
 
     useEffect(() => {
         return () => {
@@ -66,7 +53,7 @@ export default function HomePage() {
         <div className="container px-2 md:px-10 lg:px-20 mx-auto py-6 flex gap-6 ">
             <div className="flex-grow">
                 <TweetInput />
-                <div className="mt-6 space-y-6" ref={tweetListRef}>
+                <div className="mt-6 space-y-6 pb-6" ref={tweetListRef}>
                     {data?.getTweet.tweets.map((tweet) => (
                         <div key={tweet.id}>
                             <Tweet data={tweet} />
@@ -80,9 +67,17 @@ export default function HomePage() {
                             </span>
                         </div>
                     )}
+                    {!loading && !canFetchMore && (
+                        <div className="flex items-center justify-center gap-1">
+                            <AiOutlineCheckCircle className="text-xl text-green-500" />
+                            <span className="text-center text-black dark:text-white">
+                                {t('you_are_all_caught_up')}
+                            </span>
+                        </div>
+                    )}
                 </div>
             </div>
-            <div className="sticky hidden md:block top-6 max-w-[306px] md:max-w-[406px] w-full h-fit space-y-6">
+            <div className="sticky hidden md:block top-6 max-w-[206px] lg:max-w-[306px] w-full h-fit space-y-6">
                 {!!topTweetedTagCount?.getTopTweetedTagCount.length && (
                     <Card title={t('trend_for_you')}>
                         <div className="my-3 space-y-6">
@@ -99,7 +94,10 @@ export default function HomePage() {
                                             #{name}
                                         </Link>
                                         <span className="font-medium text-neutral-400 text-xs">
-                                            {count} {t('tweets')}
+                                            {count}{' '}
+                                            {count === 1
+                                                ? t('tweet')
+                                                : t('tweets')}
                                         </span>
                                     </div>
                                 ),

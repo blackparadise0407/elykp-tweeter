@@ -25,7 +25,7 @@ const getStyleFromType = (type: ButtonType) => {
         case 'secondary':
             return '!border-blue-500 hover:bg-blue-50 text-blue-500'
         case 'link':
-            return 'bg-transparent hover:bg-gray-100 dark:hover:bg-neutral-600 text-black dark:text-white'
+            return 'bg-transparent hover:bg-neutral-100 dark:hover:bg-neutral-600 text-black dark:text-white'
         default:
             return ''
     }

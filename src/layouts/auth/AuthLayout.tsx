@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
 import { Outlet, useNavigate } from 'react-router-dom'
 
-import { useCurrentUserQuery } from 'hooks/useCurrentUserQuery'
+import { useCurrentUserQuery } from 'features/user/hooks/useCurrentUserQuery'
 
 export default function AuthLayout() {
     const { data } = useCurrentUserQuery()

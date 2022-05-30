@@ -35,5 +35,12 @@
     "tweets": "Tweets",
     "trend_for_you": "Trend for you",
     "who_to_follow": "Who to follow",
-    "fetching_new_tweets": "Fetching new tweets..."
+    "fetching_new_tweets": "Fetching new tweets...",
+    "you_are_all_caught_up": "You're all caught up",
+    "media": "Media",
+    "tweets_and_replies": "Tweet & replies",
+    "likes": "Likes",
+    "following": "Following",
+    "follower": "Follower",
+    "followers": "Followers"
 }

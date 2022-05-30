@@ -36,7 +36,7 @@ export default memo(function Tweet({ data }: TweetProps) {
     const { t } = useTranslation()
     if (!data) return null
 
-    const { text, tags, user, updatedAt, photo } = data
+    const { text, tags, user, updatedAt, photoId } = data
 
     return (
         <div className="bg-white dark:bg-neutral-800 p-5 rounded-lg shadow">
@@ -63,11 +63,13 @@ export default memo(function Tweet({ data }: TweetProps) {
                     }}
                     className="text-neutral-600 dark:text-white text-sm md:text-base"
                 ></p>
-                {photo && (
+                {photoId && (
                     <div
                         className="rounded-lg mt-5 w-full aspect-video"
                         style={{
-                            background: `url(http://localhost:5000/api/attachment/${photo.id}) center no-repeat`,
+                            background: `url(http://localhost:5000/api/attachment/${photoId})`,
+                            backgroundPosition: 'center',
+                            backgroundRepeat: 'no-repeat',
                             backgroundSize: 'cover',
                         }}
                     />
@@ -85,25 +87,25 @@ export default memo(function Tweet({ data }: TweetProps) {
                     className="flex items-center gap-3 font-medium"
                 >
                     <BsChatRight className="text-gray-800 dark:text-gray-300" />
-                    <span className="text-sm hidden sm:block capitalize text-gray-800 dark:text-gray-300">
+                    <span className="text-sm hidden lg:block capitalize text-gray-800 dark:text-gray-300">
                         {t('comment')}
                     </span>
                 </Button>
                 <Button type="link" block className="flex items-center gap-3">
                     <AiOutlineSync className="text-gray-800 dark:text-gray-300" />
-                    <span className="text-sm hidden sm:block capitalize text-gray-800 dark:text-gray-300">
+                    <span className="text-sm hidden lg:block capitalize text-gray-800 dark:text-gray-300">
                         {t('retweet')}
                     </span>
                 </Button>
                 <Button type="link" block className="flex items-center gap-3">
                     <BsHeart className="text-gray-800 dark:text-gray-300" />
-                    <span className="text-sm hidden sm:block capitalize text-gray-800 dark:text-gray-300">
+                    <span className="text-sm hidden lg:block capitalize text-gray-800 dark:text-gray-300">
                         {t('like')}
                     </span>
                 </Button>
                 <Button type="link" block className="flex items-center gap-3">
                     <BsBookmark className="text-gray-800 dark:text-gray-300" />
-                    <span className="text-sm hidden sm:block capitalize text-gray-800 dark:text-gray-300">
+                    <span className="text-sm hidden lg:block capitalize text-gray-800 dark:text-gray-300">
                         {t('save')}
                     </span>
                 </Button>

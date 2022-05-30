@@ -8,6 +8,12 @@ export const CURRENT_USER_QUERY = gql`
             email
             verified
             enabled
+            profileId
+            profile {
+                fullName
+                description
+                coverPhotoId
+            }
         }
     }
 `
@@ -18,6 +24,24 @@ export const GET_USER_QUERY = gql`
             id
             username
             email
+            profileId
+            profile {
+                fullName
+                description
+                coverPhotoId
+            }
+        }
+    }
+`
+
+export const UPDATE_CURRENT_USER_PROFILE_MUTATION = gql`
+    mutation UpdateCurrentUserProfileMutation(
+        $updateCurrentUserProfileInput: UpdateCurrentUserProfileInput!
+    ) {
+        updateCurrentUserProfile(
+            updateCurrentUserProfileInput: $updateCurrentUserProfileInput
+        ) {
+            id
         }
     }
 `

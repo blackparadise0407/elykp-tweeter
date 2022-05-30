@@ -10,12 +10,12 @@ import { MdGroup, MdPublic } from 'react-icons/md'
 import ReactTextareaAutosize from 'react-textarea-autosize'
 
 import { Button, Card } from 'components'
+import { useDeleleteFileMutation } from 'features/common/hooks/useDeleteFileMutation'
+import { useUploadFileMutation } from 'features/common/hooks/useUploadFileMutation'
+import { useCreateTweetMutation } from 'features/tweet/hooks/useCreateTweetMutation'
+import { useCurrentUserQuery } from 'features/user/hooks/useCurrentUserQuery'
 import { isUnderLimitSize, isValidMimeType } from 'helpers/file'
 import { extractTags } from 'helpers/string'
-import { useCreateTweetMutation } from 'hooks/useCreateTweetMutation'
-import { useCurrentUserQuery } from 'hooks/useCurrentUserQuery'
-import { useDeleleteFileMutation } from 'hooks/useDeleteFileMutation'
-import { useUploadFileMutation } from 'hooks/useUploadFileMutation'
 
 export default function TweetInput() {
     const { t } = useTranslation()
@@ -173,13 +173,13 @@ export default function TweetInput() {
                                     {t('choose_who_can_reply_to_this_tweet')}
                                 </span>
                                 <div className="flex flex-col text-gray-600 dark:text-gray-400 mt-3">
-                                    <span className="flex items-center gap-2 p-3 hover:bg-gray-100 dark:hover:bg-neutral-700 transition-colors rounded-lg cursor-pointer">
+                                    <span className="flex items-center gap-2 p-3 hover:bg-neutral-100 dark:hover:bg-neutral-700 transition-colors rounded-lg cursor-pointer">
                                         <MdPublic className="text-lg" />
                                         <span className="text-xs">
                                             {t('everyone')}
                                         </span>
                                     </span>
-                                    <span className="flex items-center gap-2 p-3 hover:bg-gray-100 dark:hover:bg-neutral-700 transition-colors rounded-lg cursor-pointer">
+                                    <span className="flex items-center gap-2 p-3 hover:bg-neutral-100 dark:hover:bg-neutral-700 transition-colors rounded-lg cursor-pointer">
                                         <MdGroup className="text-lg" />
                                         <span className="text-xs">
                                             {t('people_you_follow')}

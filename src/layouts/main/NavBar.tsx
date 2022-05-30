@@ -2,7 +2,7 @@ import clsx from 'clsx'
 import { useTranslation } from 'react-i18next'
 import { NavLink } from 'react-router-dom'
 
-import { useCurrentUserQuery } from 'hooks/useCurrentUserQuery'
+import { useCurrentUserQuery } from 'features/user/hooks/useCurrentUserQuery'
 
 const items = [
     { to: '/', transKey: 'home' },

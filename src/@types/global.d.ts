@@ -5,6 +5,16 @@ declare global {
         username: string
         verified: boolean
         enabled: boolean
+        profile: Profile
+        profileId: number
+    }
+
+    interface Profile {
+        id: number
+        fullName: string
+        description: string
+        coverPhoto: Attachment
+        coverPhotoId: string
     }
 
     interface Tweet {
@@ -12,6 +22,7 @@ declare global {
         text: string
         user: User
         photo: Attachment
+        photoId: string
         tags: Tag[]
         createdAt: Date
         updatedAt: date

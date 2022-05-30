@@ -19,9 +19,7 @@ export const GET_TWEET_QUERY = gql`
                     id
                     username
                 }
-                photo {
-                    id
-                }
+                photoId
                 tags {
                     id
                     name

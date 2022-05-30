@@ -2,7 +2,7 @@ import { lazy, useEffect } from 'react'
 import { Route, Routes, useNavigate } from 'react-router-dom'
 
 import { FormWrapper } from 'features/auth'
-import { useCurrentUserQuery } from 'hooks/useCurrentUserQuery'
+import { useCurrentUserQuery } from 'features/user/hooks/useCurrentUserQuery'
 import { AuthLayout } from 'layouts/auth'
 import { MainLayout } from 'layouts/main'
 
@@ -27,7 +27,12 @@ function App() {
                 <Route path="explore" element={<>Explore</>} />
                 <Route path="bookmarks" element={<>Bookmarks</>} />
                 <Route path="hashtag/:name" element={<>Hashtag name</>} />
-                <Route path=":username" element={<ProfilePage />} />
+                <Route path=":username" element={<ProfilePage />}>
+                    <Route index element={<>Tweets</>} />
+                    <Route path="replies" element={<>Tweets and replies</>} />
+                    <Route path="media" element={<>Media</>} />
+                    <Route path="likes" element={<>Likes</>} />
+                </Route>
             </Route>
             <Route element={<AuthLayout />}>
                 <Route path="register" element={<FormWrapper />} />
