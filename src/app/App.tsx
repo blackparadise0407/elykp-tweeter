@@ -1,6 +1,7 @@
 import { lazy, useEffect } from 'react'
 import { Route, Routes, useNavigate } from 'react-router-dom'
 
+import { ImageCropper } from 'components'
 import { FormWrapper } from 'features/auth'
 import { useCurrentUserQuery } from 'features/user/hooks/useCurrentUserQuery'
 import { AuthLayout } from 'layouts/auth'
@@ -28,7 +29,16 @@ function App() {
                 <Route path="bookmarks" element={<>Bookmarks</>} />
                 <Route path="hashtag/:name" element={<>Hashtag name</>} />
                 <Route path=":username" element={<ProfilePage />}>
-                    <Route index element={<>Tweets</>} />
+                    <Route
+                        index
+                        element={
+                            <>
+                                <ImageCropper
+                                    onConfirm={(file) => console.log(file)}
+                                />
+                            </>
+                        }
+                    />
                     <Route path="replies" element={<>Tweets and replies</>} />
                     <Route path="media" element={<>Media</>} />
                     <Route path="likes" element={<>Likes</>} />

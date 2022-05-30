@@ -96,6 +96,7 @@ export default function ProfilePage() {
                     backgroundSize: 'cover',
                 }}
             ></div>
+
             <div className="container px-2 md:px-10 lg:px-20 mx-auto -mt-16">
                 <div className="flex items-center md:items-start flex-col md:flex-row gap-6 bg-white dark:bg-neutral-800 shadow w-full rounded-lg py-6 px-7">
                     <div
