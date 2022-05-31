@@ -2,7 +2,7 @@ import { AiOutlineLeft } from 'react-icons/ai'
 import { useNavigate } from 'react-router-dom'
 
 import { NOT_FOUND } from 'assets/images'
-import { Button } from 'components/Button'
+import { Button } from 'components'
 
 export default function NotFound() {
     const navigate = useNavigate()

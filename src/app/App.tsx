@@ -29,16 +29,7 @@ function App() {
                 <Route path="bookmarks" element={<>Bookmarks</>} />
                 <Route path="hashtag/:name" element={<>Hashtag name</>} />
                 <Route path=":username" element={<ProfilePage />}>
-                    <Route
-                        index
-                        element={
-                            <>
-                                <ImageCropper
-                                    onConfirm={(file) => console.log(file)}
-                                />
-                            </>
-                        }
-                    />
+                    <Route index element={<>Tweets</>} />
                     <Route path="replies" element={<>Tweets and replies</>} />
                     <Route path="media" element={<>Media</>} />
                     <Route path="likes" element={<>Likes</>} />

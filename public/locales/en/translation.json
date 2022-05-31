@@ -42,5 +42,8 @@
     "likes": "Likes",
     "following": "Following",
     "follower": "Follower",
-    "followers": "Followers"
+    "followers": "Followers",
+    "cancel": "cancel",
+    "confirm": "confirm",
+    "select_image": "Select image"
 }

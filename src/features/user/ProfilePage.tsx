@@ -1,4 +1,11 @@
-import { useEffect, useMemo, useRef, useState } from 'react'
+import {
+    Fragment,
+    useCallback,
+    useEffect,
+    useMemo,
+    useRef,
+    useState,
+} from 'react'
 import { useTranslation } from 'react-i18next'
 import {
     AiOutlineCamera,
@@ -10,10 +17,18 @@ import {
 import { Outlet, useParams } from 'react-router-dom'
 
 import { BANNER_IMAGE_PLACEHOLDER, IMAGE_PLACEHOLDER } from 'assets/images'
-import { Button, NotFound, SideNavigation, Spinner } from 'components'
+import {
+    Button,
+    ImageCropper,
+    NotFound,
+    SideNavigation,
+    Spinner,
+} from 'components'
+import { useUploadFileMutation } from 'features/common/hooks/useUploadFileMutation'
 import { useCurrentUserQuery } from 'features/user/hooks/useCurrentUserQuery'
 
 import { useGetUserLazyQuery } from './hooks/useGetUserLazyQuery'
+import { useUpdateCurrentUserAvatarMutation } from './hooks/useUpdateCurrentUserAvatarMutation'
 import { useUpdateCurrentUserProfileMutation } from './hooks/useUpdateCurrentUserProfileMutation'
 
 export default function ProfilePage() {
@@ -21,11 +36,16 @@ export default function ProfilePage() {
     const { username } = useParams<{ username: string }>()
     const { data: currentUserData } = useCurrentUserQuery()
     const [getUserLazyQuery, { data, loading, error }] = useGetUserLazyQuery()
-    const [updateCurrentUserProfileMutation] =
-        useUpdateCurrentUserProfileMutation()
+    const [uploadFileMutation, { loading: uploadFileLoading }] =
+        useUploadFileMutation()
+    const [updateCurrentUserAvatarMutation, { loading: updateAvatarLoading }] =
+        useUpdateCurrentUserAvatarMutation()
+    const [
+        updateCurrentUserProfileMutation,
+        { loading: updateProfileLoading },
+    ] = useUpdateCurrentUserProfileMutation()
     const [isEditingDesc, setIsEditingDesc] = useState(false)
     const textareaRef = useRef<HTMLTextAreaElement>(null)
-    const fileInputRef = useRef<HTMLInputElement>(null)
 
     const isCurrentUser = useMemo(
         () => currentUserData?.currentUser.id === data?.getUser.id,
@@ -64,11 +84,57 @@ export default function ProfilePage() {
         }, 0)
     }
 
-    const handleOpenFileInput = () => {
-        if (fileInputRef.current) {
-            fileInputRef.current.click()
-        }
-    }
+    const handleUploadAvatar = useCallback(
+        async (file: File) => {
+            try {
+                if (currentUserData?.currentUser) {
+                    const { data } = await uploadFileMutation({
+                        variables: {
+                            fileUploadInput: {
+                                userId: currentUserData?.currentUser.id,
+                                file,
+                            },
+                        },
+                    })
+                    if (data?.uploadFile) {
+                        await updateCurrentUserAvatarMutation({
+                            variables: {
+                                avatarId: data?.uploadFile.id,
+                            },
+                        })
+                    }
+                }
+            } catch (e) {}
+        },
+        [currentUserData],
+    )
+
+    const handleUploadCoverPhoto = useCallback(
+        async (file: File) => {
+            try {
+                if (currentUserData?.currentUser) {
+                    const { data } = await uploadFileMutation({
+                        variables: {
+                            fileUploadInput: {
+                                userId: currentUserData?.currentUser.id,
+                                file,
+                            },
+                        },
+                    })
+                    if (data?.uploadFile) {
+                        await updateCurrentUserProfileMutation({
+                            variables: {
+                                updateCurrentUserProfileInput: {
+                                    coverPhotoId: data.uploadFile.id,
+                                },
+                            },
+                        })
+                    }
+                }
+            } catch (e) {}
+        },
+        [currentUserData],
+    )
 
     useEffect(() => {
         getUserLazyQuery({ variables: { username } })
@@ -86,43 +152,56 @@ export default function ProfilePage() {
     const user = data.getUser
 
     return (
-        <div>
+        <Fragment>
             <div
-                className="h-[280px] w-full"
+                className="relative h-[280px] w-full"
                 style={{
                     backgroundImage: `url(http://localhost:5000/api/attachment/${user?.profile.coverPhotoId}), url(${BANNER_IMAGE_PLACEHOLDER})`,
                     backgroundRepeat: 'no-repeat',
                     backgroundPosition: 'center',
                     backgroundSize: 'cover',
                 }}
-            ></div>
-
-            <div className="container px-2 md:px-10 lg:px-20 mx-auto -mt-16">
-                <div className="flex items-center md:items-start flex-col md:flex-row gap-6 bg-white dark:bg-neutral-800 shadow w-full rounded-lg py-6 px-7">
+            >
+                <ImageCropper
+                    loading={uploadFileLoading || updateProfileLoading}
+                    aspect={16 / 9}
+                    onConfirm={handleUploadCoverPhoto}
+                >
+                    <Button
+                        small
+                        icon={<AiOutlineCamera />}
+                        className="absolute top-2 right-2"
+                    >
+                        Change cover photo
+                    </Button>
+                </ImageCropper>
+            </div>
+            <div className="container relative z-[1] px-2 md:px-10 lg:px-20 mx-auto -mt-16">
+                <div className="flex items-center md:items-start flex-col md:flex-row gap-6 bg-white dark:bg-neutral-800 shadow w-full rounded-lg py-6 px-7 min-h-[163px]">
                     <div
-                        className="relative w-[120px] h-[120px] md:w-[152px] md:h-[152px] aspect-square border-4 rounded-lg border-white -mt-28 md:-mt-0 md:-translate-y-16"
+                        className="relative w-[120px] h-[120px] md:w-[152px] md:h-[152px] aspect-square border-4 rounded-lg border-white -mt-28 md:-mt-20"
                         style={{
                             background: `url(${IMAGE_PLACEHOLDER}) center no-repeat`,
                             backgroundSize: 'cover',
                         }}
                     >
                         <img
-                            className="absolute w-full rounded-lg"
-                            src="https://i.pravatar.cc/152"
+                            className="absolute w-full rounded"
+                            src={`http://localhost:5000/api/attachment/${user.avatarId}`}
                             alt=""
                         />
-                        <div
-                            className="absolute bottom-2 right-2 rounded-lg bg-white shadow p-1 cursor-pointer"
-                            onClick={handleOpenFileInput}
-                        >
-                            <AiOutlineCamera className="text-xl text-neutral-700" />
-                            <input
-                                ref={fileInputRef}
-                                accept="image/jpeg,image/png"
-                                type="file"
-                                className="hidden"
-                            />
-                        </div>
+                        {isCurrentUser && (
+                            <ImageCropper
+                                loading={
+                                    uploadFileLoading || updateAvatarLoading
+                                }
+                                onConfirm={handleUploadAvatar}
+                            >
+                                <div className="absolute bottom-2 right-2 rounded-lg bg-white shadow p-1 cursor-pointer">
+                                    <AiOutlineCamera className="text-xl text-neutral-700" />
+                                </div>
+                            </ImageCropper>
+                        )}
                     </div>
                     <div>
                         <div className="flex items-center flex-col md:flex-row gap-1 md:gap-6 flex-wrap">
@@ -187,7 +266,9 @@ export default function ProfilePage() {
                         </div>
                     </div>
                     <div className="flex-grow hidden md:block"></div>
-                    <Button icon={<AiOutlineUserAdd />}>Follow</Button>
+                    <Button small icon={<AiOutlineUserAdd />}>
+                        Follow
+                    </Button>
                 </div>
                 <div className="flex gap-6 mt-6">
                     <SideNavigation
@@ -207,6 +288,6 @@ export default function ProfilePage() {
                     </div>
                 </div>
             </div>
-        </div>
+        </Fragment>
     )
 }

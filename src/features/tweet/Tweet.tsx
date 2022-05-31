@@ -7,6 +7,7 @@ import { Link } from 'react-router-dom'
 import ReactTextareaAutosize from 'react-textarea-autosize'
 
 import { Avatar, Button } from 'components'
+import { useCurrentUserQuery } from 'features/user/hooks/useCurrentUserQuery'
 import { HASHTAG_REGEXP } from 'helpers/string'
 
 interface TweetProps {
@@ -34,6 +35,7 @@ const _renderText = (text: string, tags: Tag[]) => {
 
 export default memo(function Tweet({ data }: TweetProps) {
     const { t } = useTranslation()
+    const { data: currentUserData } = useCurrentUserQuery()
     if (!data) return null
 
     const { text, tags, user, updatedAt, photoId } = data
@@ -41,9 +43,11 @@ export default memo(function Tweet({ data }: TweetProps) {
     return (
         <div className="bg-white dark:bg-neutral-800 p-5 rounded-lg shadow">
             <div className="flex items-center gap-4">
-                <Avatar />
+                <Avatar
+                    url={`http://localhost:5000/api/attachment/${currentUserData?.currentUser.avatarId}`}
+                />
                 <div className="flex flex-col">
-                    <span className="">
+                    <span>
                         <Link
                             to={`/${user.username}`}
                             className="font-medium text-base text-black hover:text-black dark:text-white hover:dark:text-white hover:underline cursor-pointer"
@@ -61,7 +65,7 @@ export default memo(function Tweet({ data }: TweetProps) {
                     dangerouslySetInnerHTML={{
                         __html: _renderText(text, tags),
                     }}
-                    className="text-neutral-600 dark:text-white text-sm md:text-base"
+                    className="text-neutral-600 whitespace-pre-wrap dark:text-white text-sm md:text-base"
                 ></p>
                 {photoId && (
                     <div
@@ -111,7 +115,9 @@ export default memo(function Tweet({ data }: TweetProps) {
                 </Button>
             </div>
             <div className="flex items-center gap-4 mt-2">
-                <Avatar />
+                <Avatar
+                    url={`http://localhost:5000/api/attachment/${user.avatarId}`}
+                />
                 <ReactTextareaAutosize
                     className="textarea bg-neutral-100 dark:bg-neutral-700 text-black dark:text-white py-2 md:py-2.5 px-3 rounded-lg border border-gray-200 dark:border-neutral-600"
                     maxRows={5}

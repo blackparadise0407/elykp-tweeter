@@ -5,6 +5,7 @@ type SpinnerSize = 'lg' | 'sm' | 'base'
 
 interface SpinnerProps {
     size?: SpinnerSize
+    className?: string
 }
 
 const getStyleFromSize = (size: SpinnerSize) => {
@@ -20,12 +21,13 @@ const getStyleFromSize = (size: SpinnerSize) => {
     }
 }
 
-export default function Spinner({ size = 'base' }: SpinnerProps) {
+export default function Spinner({ size = 'base', className }: SpinnerProps) {
     return (
         <AiOutlineLoading3Quarters
             className={clsx(
                 'text-neutral-600 dark:text-white animate-spin',
                 getStyleFromSize(size),
+                className,
             )}
         />
     )

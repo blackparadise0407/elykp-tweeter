@@ -1,10 +1,13 @@
-import React, { memo, useState, useRef } from 'react'
-import {
-    AiOutlineCheck,
-    AiOutlineClose,
-    AiOutlineRotateLeft,
-    AiOutlineRotateRight,
-} from 'react-icons/ai'
+import React, {
+    memo,
+    useState,
+    useRef,
+    ReactNode,
+    useCallback,
+    MouseEventHandler,
+} from 'react'
+import { useTranslation } from 'react-i18next'
+import { AiOutlineRotateLeft, AiOutlineRotateRight } from 'react-icons/ai'
 import ReactCrop, {
     centerCrop,
     makeAspectCrop,
@@ -12,6 +15,7 @@ import ReactCrop, {
     PixelCrop,
 } from 'react-image-crop'
 
+import { Modal, Button } from 'components'
 import { useDebounceEffect } from 'hooks/useDebounceEffect'
 
 import { canvasPreview } from './canvasPreview'
@@ -20,6 +24,8 @@ import { blobToFile, toBlob } from './imagePreview'
 
 interface ImageCropperProps {
     aspect?: number
+    children: ReactNode
+    loading?: boolean
     onConfirm?: (file: File) => void
 }
 
@@ -45,18 +51,22 @@ function centerAspectCrop(
 
 export default memo(function ImageCropper({
     aspect = 1 / 1,
+    children,
+    loading = false,
     onConfirm = () => {},
 }: ImageCropperProps) {
+    const { t } = useTranslation()
     const [imgSrc, setImgSrc] = useState('')
     const previewCanvasRef = useRef<HTMLCanvasElement>(null)
     const imgRef = useRef<HTMLImageElement>(null)
     const [crop, setCrop] = useState<Crop>()
     const [completedCrop, setCompletedCrop] = useState<PixelCrop>()
     const [rotate, setRotate] = useState(0)
+    const inputRef = useRef<HTMLInputElement>(null)
 
     function onSelectFile(e: React.ChangeEvent<HTMLInputElement>) {
-        if (e.target.files && e.target.files.length > 0) {
-            setCrop(undefined) // Makes crop preview update between images.
+        if (e.target.files?.length) {
+            setCrop(undefined)
             const reader = new FileReader()
             reader.addEventListener('load', () =>
                 setImgSrc(reader?.result?.toString() || ''),
@@ -64,7 +74,6 @@ export default memo(function ImageCropper({
             reader.readAsDataURL(e.target.files[0])
         }
     }
-
     function onImageLoad(e: React.SyntheticEvent<HTMLImageElement>) {
         const { width, height } = e.currentTarget
         setCrop(centerAspectCrop(width, height, aspect))
@@ -78,7 +87,6 @@ export default memo(function ImageCropper({
                 imgRef.current &&
                 previewCanvasRef.current
             ) {
-                // We use canvasPreview as it's much faster than imgPreview.
                 canvasPreview(
                     imgRef.current,
                     previewCanvasRef.current,
@@ -96,19 +104,49 @@ export default memo(function ImageCropper({
         setRotate((rotate) => (left ? (rotate -= 90) : (rotate += 90)))
     }
 
-    const handleConfirm = async () => {
+    const handleOpenCopper = () => {
+        if (inputRef.current) {
+            inputRef.current.click()
+        }
+    }
+
+    const handleCloseCropper = useCallback(() => {
+        setImgSrc('')
+        setCrop(undefined)
+    }, [])
+
+    const handleConfirm = useCallback(async () => {
         if (previewCanvasRef.current) {
             const blob = await toBlob(previewCanvasRef.current)
             const file = blobToFile(blob, Date.now().toString())
             onConfirm(file)
+            handleCloseCropper()
         }
+    }, [handleCloseCropper])
+
+    const handleInputClick: MouseEventHandler<HTMLInputElement> = (e) => {
+        const element = e.target as HTMLInputElement
+        element.value = ''
     }
 
     return (
         <div className="select-none">
-            <input type="file" accept="image/*" onChange={onSelectFile} />
-            {imgSrc && (
-                <div>
+            <div onClick={handleOpenCopper}>{children}</div>
+            <input
+                ref={inputRef}
+                type="file"
+                className="hidden"
+                accept="image/jpeg,image/png"
+                onChange={onSelectFile}
+                onClick={handleInputClick}
+            />
+            <Modal
+                title={t('select_image')}
+                open={!!imgSrc}
+                onClose={handleCloseCropper}
+                onOk={handleConfirm}
+            >
+                <div className="flex flex-col items-center gap-2 p-2">
                     <ReactCrop
                         crop={crop}
                         onChange={(_, percentCrop) => setCrop(percentCrop)}
@@ -140,18 +178,9 @@ export default memo(function ImageCropper({
                                 onClick={() => handleRotate()}
                             />
                         </div>
-                        <div className="p-1 rounded-md shadow bg-white text-red-500 hover:text-red-400 transition-colors">
-                            <AiOutlineClose className="cursor-pointer" />
-                        </div>
-                        <div className="p-1 rounded-md shadow bg-white text-green-500 hover:text-green-400 transition-colors">
-                            <AiOutlineCheck
-                                className="cursor-pointer"
-                                onClick={handleConfirm}
-                            />
-                        </div>
                     </div>
                 </div>
-            )}
+            </Modal>
         </div>
     )
 })

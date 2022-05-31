@@ -38,6 +38,11 @@ module.exports = {
         'no-empty': ['error', { allowEmptyCatch: true }],
         '@typescript-eslint/no-empty-function': 'warn',
         'import/no-named-as-default-member': 'off',
+        'no-empty-function': 'off',
+        '@typescript-eslint/no-empty-function': [
+            'error',
+            { allow: ['arrowFunctions'] },
+        ],
         'prettier/prettier': [
             'error',
             {

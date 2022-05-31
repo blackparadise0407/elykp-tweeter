@@ -1,7 +1,7 @@
 import clsx from 'clsx'
 import { HTMLProps, memo, MouseEventHandler, ReactNode } from 'react'
 
-import { Spinner } from 'components/Spinner'
+import { Spinner } from 'components'
 
 type HTMLType = 'button' | 'submit' | 'reset' | undefined
 
@@ -15,6 +15,7 @@ interface ButtonProps
     block?: boolean
     loading?: boolean
     type?: ButtonType
+    small?: boolean
     onClick?: MouseEventHandler<HTMLButtonElement>
 }
 
@@ -40,6 +41,7 @@ export default memo(function Button({
     type = 'primary',
     disabled,
     className,
+    small,
     onClick,
     ...rest
 }: ButtonProps) {
@@ -47,6 +49,7 @@ export default memo(function Button({
         <button
             className={clsx(
                 'flex items-center justify-center gap-3 py-2 px-6 font-medium text-xs md:text-base border border-transparent rounded-lg select-none transition-all',
+                small && 'md:text-sm',
                 block && 'w-full block',
                 getStyleFromType(type),
                 disabled && 'opacity-80 pointer-events-none',

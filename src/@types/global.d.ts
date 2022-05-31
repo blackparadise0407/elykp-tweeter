@@ -7,14 +7,16 @@ declare global {
         enabled: boolean
         profile: Profile
         profileId: number
+        avatarId?: string
+        avatar?: Attachment
     }
 
     interface Profile {
         id: number
         fullName: string
         description: string
-        coverPhoto: Attachment
-        coverPhotoId: string
+        coverPhoto?: Attachment
+        coverPhotoId?: string
     }
 
     interface Tweet {

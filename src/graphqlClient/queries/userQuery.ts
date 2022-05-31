@@ -9,6 +9,7 @@ export const CURRENT_USER_QUERY = gql`
             verified
             enabled
             profileId
+            avatarId
             profile {
                 fullName
                 description
@@ -25,6 +26,7 @@ export const GET_USER_QUERY = gql`
             username
             email
             profileId
+            avatarId
             profile {
                 fullName
                 description
@@ -41,6 +43,14 @@ export const UPDATE_CURRENT_USER_PROFILE_MUTATION = gql`
         updateCurrentUserProfile(
             updateCurrentUserProfileInput: $updateCurrentUserProfileInput
         ) {
+            id
+        }
+    }
+`
+
+export const UPDATE_CURRENT_USER_AVATAR_MUTATION = gql`
+    mutation UpdateCurrentUserAvatar($avatarId: String!) {
+        updateCurrentUserAvatar(avatarId: $avatarId) {
             id
         }
     }

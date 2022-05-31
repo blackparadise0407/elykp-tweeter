@@ -19,14 +19,11 @@ const getClassFromSize = (s: AvatarSize) => {
     }
 }
 
-export default memo(function Avatar({
-    url = 'https://i.pravatar.cc/40',
-    size = 'base',
-}: AvatarProps) {
+export default memo(function Avatar({ url, size = 'base' }: AvatarProps) {
     return (
         <img
             className={clsx('rounded-lg', getClassFromSize(size))}
-            src={url}
+            src={url ?? 'https://i.pravatar.cc/40'}
             onError={(e) => {
                 e.currentTarget.onerror = null
                 e.currentTarget.src = 'https://i.pravatar.cc/40'

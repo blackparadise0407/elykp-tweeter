@@ -2,6 +2,7 @@ import clsx from 'clsx'
 import { useTranslation } from 'react-i18next'
 import { NavLink } from 'react-router-dom'
 
+import { Avatar } from 'components'
 import { useCurrentUserQuery } from 'features/user/hooks/useCurrentUserQuery'
 
 const items = [
@@ -43,11 +44,16 @@ export default function NavBar() {
                 ))}
             </div>
             <div className="flex items-center gap-3 justify-self-end py-5">
-                <img
-                    className="w-8 h-8 rounded-lg"
-                    src="https://i.pravatar.cc/32"
-                />
-                <h6>{data?.currentUser.username}</h6>
+                {data?.currentUser && (
+                    <>
+                        <Avatar
+                            size="base"
+                            url={`http://localhost:5000/api/attachment/${data.currentUser.avatarId}`}
+                        />
+
+                        <h6>{data.currentUser.username}</h6>
+                    </>
+                )}
             </div>
         </nav>
     )

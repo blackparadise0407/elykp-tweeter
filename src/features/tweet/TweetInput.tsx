@@ -9,7 +9,7 @@ import { AiOutlineDelete, AiOutlinePicture } from 'react-icons/ai'
 import { MdGroup, MdPublic } from 'react-icons/md'
 import ReactTextareaAutosize from 'react-textarea-autosize'
 
-import { Button, Card } from 'components'
+import { Avatar, Button, Card } from 'components'
 import { useDeleleteFileMutation } from 'features/common/hooks/useDeleteFileMutation'
 import { useUploadFileMutation } from 'features/common/hooks/useUploadFileMutation'
 import { useCreateTweetMutation } from 'features/tweet/hooks/useCreateTweetMutation'
@@ -111,11 +111,11 @@ export default function TweetInput() {
     return (
         <Card title={t('tweet_something')}>
             <div className="flex gap-3">
-                <img
-                    className="w-10 h-10 rounded-lg"
-                    src="https://i.pravatar.cc/40"
-                    alt=""
-                />
+                {userData?.currentUser && (
+                    <Avatar
+                        url={`http://localhost:5000/api/attachment/${userData?.currentUser.avatarId}`}
+                    />
+                )}
                 <div className="flex-grow">
                     <ReactTextareaAutosize
                         className="textarea bg-white dark:bg-neutral-800 text-black dark:text-white"
@@ -190,6 +190,7 @@ export default function TweetInput() {
                         </div>
                         <div className="flex-grow"></div>
                         <Button
+                            small
                             className="text-xs capitalize"
                             loading={loading}
                             onClick={handleCreateTweet}
