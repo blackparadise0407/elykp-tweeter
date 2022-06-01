@@ -14,7 +14,7 @@ export default function AuthLayout() {
     }, [data])
 
     return (
-        <div className="bg-white dark:bg-neutral-800 min-h-screen grid place-items-center">
+        <div className="bg-white dark:bg-neutral-800 min-h-screen grid place-items-center p-5">
             <Outlet />
         </div>
     )

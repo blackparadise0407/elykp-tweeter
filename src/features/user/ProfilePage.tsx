@@ -16,7 +16,7 @@ import {
 } from 'react-icons/ai'
 import { Outlet, useParams } from 'react-router-dom'
 
-import { BANNER_IMAGE_PLACEHOLDER, IMAGE_PLACEHOLDER } from 'assets/images'
+import { AVATAR_PLACEHOLDER, BANNER_IMAGE_PLACEHOLDER } from 'assets/images'
 import {
     Button,
     ImageCropper,
@@ -181,8 +181,8 @@ export default function ProfilePage() {
                     <div
                         className="relative w-[120px] h-[120px] md:w-[152px] md:h-[152px] aspect-square border-4 rounded-lg border-white -mt-28 md:-mt-20"
                         style={{
-                            background: `url(${IMAGE_PLACEHOLDER}) center no-repeat`,
-                            backgroundSize: 'cover',
+                            background: `url(${AVATAR_PLACEHOLDER}) center no-repeat`,
+                            backgroundSize: 'contain',
                         }}
                     >
                         <img

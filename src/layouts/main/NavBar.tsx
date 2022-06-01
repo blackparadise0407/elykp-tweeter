@@ -1,6 +1,6 @@
 import clsx from 'clsx'
 import { useTranslation } from 'react-i18next'
-import { NavLink } from 'react-router-dom'
+import { Link, NavLink } from 'react-router-dom'
 
 import { Avatar } from 'components'
 import { useCurrentUserQuery } from 'features/user/hooks/useCurrentUserQuery'
@@ -17,9 +17,12 @@ export default function NavBar() {
 
     return (
         <nav className="bg-white dark:bg-neutral-800 text-black dark:text-white px-2 md:px-10 lg:px-20 flex justify-between items-center">
-            <p className="font-semibold justify-self-start py-5">
+            <Link
+                to="/"
+                className="text-black dark:text-white font-semibold justify-self-start py-5 hover:text-white hover:dark:text-black"
+            >
                 ElykP Tweeter
-            </p>
+            </Link>
             <div className="mx-auto self-stretch items-center hidden md:flex gap-10 lg:gap-20">
                 {items.map(({ to, transKey }) => (
                     <NavLink
@@ -48,7 +51,7 @@ export default function NavBar() {
                     <>
                         <Avatar
                             size="base"
-                            url={`http://localhost:5000/api/attachment/${data.currentUser.avatarId}`}
+                            userId={data?.currentUser?.avatarId}
                         />
 
                         <h6>{data.currentUser.username}</h6>

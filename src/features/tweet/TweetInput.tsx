@@ -112,9 +112,7 @@ export default function TweetInput() {
         <Card title={t('tweet_something')}>
             <div className="flex gap-3">
                 {userData?.currentUser && (
-                    <Avatar
-                        url={`http://localhost:5000/api/attachment/${userData?.currentUser.avatarId}`}
-                    />
+                    <Avatar userId={userData?.currentUser?.avatarId} />
                 )}
                 <div className="flex-grow">
                     <ReactTextareaAutosize

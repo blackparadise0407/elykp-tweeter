@@ -1,10 +1,12 @@
 import clsx from 'clsx'
 import { memo } from 'react'
 
+import { AVATAR_PLACEHOLDER } from 'assets/images'
+
 type AvatarSize = 'lg' | 'sm' | 'base'
 
 interface AvatarProps {
-    url?: string
+    userId?: string | null
     size?: AvatarSize
 }
 
@@ -19,14 +21,16 @@ const getClassFromSize = (s: AvatarSize) => {
     }
 }
 
-export default memo(function Avatar({ url, size = 'base' }: AvatarProps) {
+const URL = 'http://localhost:5000/api/attachment'
+
+export default memo(function Avatar({ userId, size = 'base' }: AvatarProps) {
     return (
         <img
             className={clsx('rounded-lg', getClassFromSize(size))}
-            src={url ?? 'https://i.pravatar.cc/40'}
+            src={userId ? `${URL}/${userId}` : AVATAR_PLACEHOLDER}
             onError={(e) => {
                 e.currentTarget.onerror = null
-                e.currentTarget.src = 'https://i.pravatar.cc/40'
+                e.currentTarget.src = AVATAR_PLACEHOLDER
             }}
         />
     )
