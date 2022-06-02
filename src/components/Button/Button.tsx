@@ -1,23 +1,9 @@
 import clsx from 'clsx'
-import { HTMLProps, memo, MouseEventHandler, ReactNode } from 'react'
+import { memo } from 'react'
 
 import { Spinner } from 'components'
 
-type HTMLType = 'button' | 'submit' | 'reset' | undefined
-
-type ButtonType = 'primary' | 'secondary' | 'link'
-
-interface ButtonProps
-    extends Omit<HTMLProps<HTMLButtonElement>, 'onClick' | 'classID'> {
-    htmlType?: HTMLType
-    children?: ReactNode
-    icon?: ReactNode
-    block?: boolean
-    loading?: boolean
-    type?: ButtonType
-    small?: boolean
-    onClick?: MouseEventHandler<HTMLButtonElement>
-}
+import { ButtonProps, ButtonType } from '.'
 
 const getStyleFromType = (type: ButtonType) => {
     switch (type) {

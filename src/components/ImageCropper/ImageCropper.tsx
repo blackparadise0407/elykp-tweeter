@@ -15,7 +15,7 @@ import ReactCrop, {
     PixelCrop,
 } from 'react-image-crop'
 
-import { Modal, Button } from 'components'
+import { Modal } from 'components'
 import { useDebounceEffect } from 'hooks/useDebounceEffect'
 
 import { canvasPreview } from './canvasPreview'
@@ -145,6 +145,12 @@ export default memo(function ImageCropper({
                 open={!!imgSrc}
                 onClose={handleCloseCropper}
                 onOk={handleConfirm}
+                cancelBtnProps={{
+                    loading,
+                }}
+                okBtnProps={{
+                    loading,
+                }}
             >
                 <div className="flex flex-col items-center gap-2 p-2">
                     <ReactCrop

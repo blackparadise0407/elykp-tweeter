@@ -39,6 +39,7 @@ module.exports = {
         '@typescript-eslint/no-empty-function': 'warn',
         'import/no-named-as-default-member': 'off',
         'no-empty-function': 'off',
+        'no-case-declarations': 'off',
         '@typescript-eslint/no-empty-function': [
             'error',
             { allow: ['arrowFunctions'] },
@@ -48,6 +49,11 @@ module.exports = {
             {
                 endOfLine: 'auto',
             },
+        ],
+        'no-unused-vars': 'off',
+        '@typescript-eslint/no-unused-vars': [
+            'error',
+            { argsIgnorePattern: '^_', destructuredArrayIgnorePattern: '^_' },
         ],
         'import/order': [
             'error',

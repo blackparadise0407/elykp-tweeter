@@ -46,6 +46,24 @@ declare global {
         mimetype: string
         encoding: string
     }
+
+    type ToastVariant = 'success' | 'warning' | 'error' | 'info'
+
+    interface ToastOptions {
+        variant?: ToastVariant
+    }
+
+    interface Toast {
+        id: number
+        message: string
+        variant?: ToastVariant
+    }
+
+    interface ToastContext {
+        items: Toast[]
+        enqueue: (message: string, opts?: ToastOptions) => void
+        remove: (id: number) => void
+    }
 }
 
 export {}

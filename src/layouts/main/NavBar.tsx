@@ -19,7 +19,7 @@ export default function NavBar() {
         <nav className="bg-white dark:bg-neutral-800 text-black dark:text-white px-2 md:px-10 lg:px-20 flex justify-between items-center">
             <Link
                 to="/"
-                className="text-black dark:text-white font-semibold justify-self-start py-5 hover:text-white hover:dark:text-black"
+                className="text-black dark:text-white font-semibold justify-self-start py-5 hover:text-black hover:dark:text-white"
             >
                 ElykP Tweeter
             </Link>

@@ -12,7 +12,7 @@ import { useGetTweetQuery } from './hooks/useGetTweetQuery'
 import Tweet from './Tweet'
 import TweetInput from './TweetInput'
 
-const FETCH_LIMIT = 3
+const FETCH_LIMIT = 5
 
 export default function HomePage() {
     const { t } = useTranslation()

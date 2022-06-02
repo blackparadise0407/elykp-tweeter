@@ -18,6 +18,7 @@ import { Outlet, useParams } from 'react-router-dom'
 
 import { AVATAR_PLACEHOLDER, BANNER_IMAGE_PLACEHOLDER } from 'assets/images'
 import {
+    Backdrop,
     Button,
     ImageCropper,
     NotFound,
@@ -141,7 +142,11 @@ export default function ProfilePage() {
     }, [username])
 
     if (loading) {
-        return <Spinner />
+        return (
+            <Backdrop centerChildren>
+                <Spinner size="lg" />
+            </Backdrop>
+        )
     }
 
     if (error) {
@@ -164,7 +169,7 @@ export default function ProfilePage() {
             >
                 <ImageCropper
                     loading={uploadFileLoading || updateProfileLoading}
-                    aspect={16 / 9}
+                    aspect={3 / 1}
                     onConfirm={handleUploadCoverPhoto}
                 >
                     <Button
@@ -205,7 +210,7 @@ export default function ProfilePage() {
                     </div>
                     <div>
                         <div className="flex items-center flex-col md:flex-row gap-1 md:gap-6 flex-wrap">
-                            <span className="text-2xl font-bold text-neutral-800 dark:text-white">
+                            <span className="flex-1 min-w-0 truncate text-2xl font-bold text-neutral-800 dark:text-white">
                                 {user.username}
                             </span>
                             <div className="flex items-center gap-4 capitalize">

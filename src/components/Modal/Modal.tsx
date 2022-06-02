@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { AiOutlineClose } from 'react-icons/ai'
 
 import { Backdrop } from 'components'
-import { Button } from 'components/Button'
+import { Button, ButtonProps } from 'components/Button'
 import { Divider } from 'components/Divider'
 
 interface ModalProps {
@@ -12,6 +12,8 @@ interface ModalProps {
     children?: ReactNode
     okLabel?: ReactNode
     cancelLabel?: ReactNode
+    okBtnProps?: ButtonProps
+    cancelBtnProps?: ButtonProps
     onClose?: () => void
     onOk?: () => void
 }
@@ -22,6 +24,8 @@ export default memo(function Modal({
     children,
     okLabel,
     cancelLabel,
+    cancelBtnProps,
+    okBtnProps,
     onClose,
     onOk,
 }: ModalProps) {
@@ -54,10 +58,16 @@ export default memo(function Modal({
                         type="link"
                         className="capitalize"
                         onClick={onClose}
+                        {...cancelBtnProps}
                     >
                         {cancelLabel ? cancelLabel : t('cancel')}
                     </Button>
-                    <Button small className="capitalize" onClick={onOk}>
+                    <Button
+                        small
+                        className="capitalize"
+                        onClick={onOk}
+                        {...okBtnProps}
+                    >
                         {okLabel ? okLabel : t('confirm')}
                     </Button>
                 </div>
