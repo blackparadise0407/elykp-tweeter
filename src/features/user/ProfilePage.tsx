@@ -25,6 +25,7 @@ import {
     SideNavigation,
     Spinner,
 } from 'components'
+import { useToastContext } from 'contexts/toast/ToastContext'
 import { useUploadFileMutation } from 'features/common/hooks/useUploadFileMutation'
 import { useCurrentUserQuery } from 'features/user/hooks/useCurrentUserQuery'
 
@@ -34,6 +35,7 @@ import { useUpdateCurrentUserProfileMutation } from './hooks/useUpdateCurrentUse
 
 export default function ProfilePage() {
     const { t } = useTranslation()
+    const { enqueue } = useToastContext()
     const { username } = useParams<{ username: string }>()
     const { data: currentUserData } = useCurrentUserQuery()
     const [getUserLazyQuery, { data, loading, error }] = useGetUserLazyQuery()
@@ -70,6 +72,9 @@ export default function ProfilePage() {
                         },
                     },
                 })
+                enqueue(t('update_profile_success'), {
+                    variant: 'success',
+                })
                 setIsEditingDesc(false)
             } catch (e) {}
         }
@@ -103,6 +108,9 @@ export default function ProfilePage() {
                                 avatarId: data?.uploadFile.id,
                             },
                         })
+                        enqueue(t('update_avatar_success'), {
+                            variant: 'success',
+                        })
                     }
                 }
             } catch (e) {}
@@ -129,6 +137,9 @@ export default function ProfilePage() {
                                     coverPhotoId: data.uploadFile.id,
                                 },
                             },
+                        })
+                        enqueue(t('update_cover_photo_success'), {
+                            variant: 'success',
                         })
                     }
                 }
@@ -181,6 +192,7 @@ export default function ProfilePage() {
                     </Button>
                 </ImageCropper>
             </div>
+            <Button onClick={() => enqueue('ok')}>opk</Button>
             <div className="container relative z-[1] px-2 md:px-10 lg:px-20 mx-auto -mt-16">
                 <div className="flex items-center md:items-start flex-col md:flex-row gap-6 bg-white dark:bg-neutral-800 shadow w-full rounded-lg py-6 px-7 min-h-[163px]">
                     <div

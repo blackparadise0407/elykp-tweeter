@@ -1,3 +1,5 @@
+import { ReactNode } from 'react'
+
 declare global {
     interface User {
         id: string
@@ -55,8 +57,8 @@ declare global {
 
     interface Toast {
         id: number
-        message: string
-        variant?: ToastVariant
+        message: ReactNode
+        variant: ToastVariant
     }
 
     interface ToastContext {

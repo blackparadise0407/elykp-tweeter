@@ -1,9 +1,4 @@
-import {
-    AnimatePresence,
-    AnimateSharedLayout,
-    motion,
-    Variants,
-} from 'framer-motion'
+import { AnimatePresence, motion, Variants } from 'framer-motion'
 import {
     createContext,
     ReactNode,
@@ -51,7 +46,7 @@ export const ToastProvider = ({ children }: ToastProviderProps) => {
 
     const handleEnqueueToast = useCallback(
         (message: string, opts: ToastOptions = {}) => {
-            const { variant } = opts
+            const { variant = 'success' } = opts
             const toast: Toast = {
                 id: Date.now(),
                 message,
@@ -89,7 +84,16 @@ export const ToastProvider = ({ children }: ToastProviderProps) => {
                 <AnimatePresence initial={false}>
                     {toasts.map((toast) => (
                         <motion.div
+                            drag="x"
+                            dragElastic={0.5}
+                            dragConstraints={{ left: 0, right: 200 }}
                             layout
+                            onDragEnd={(_, info) => {
+                                const { offset } = info
+                                if (offset.x > 200) {
+                                    handleRemoveToast(toast.id)
+                                }
+                            }}
                             variants={variants}
                             initial="initial"
                             animate="animate"

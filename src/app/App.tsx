@@ -1,8 +1,6 @@
 import { lazy, useEffect } from 'react'
 import { Route, Routes, useNavigate } from 'react-router-dom'
 
-import { Button } from 'components'
-import { useToastContext } from 'contexts/toast'
 import { FormWrapper } from 'features/auth'
 import { useCurrentUserQuery } from 'features/user/hooks/useCurrentUserQuery'
 import { AuthLayout } from 'layouts/auth'
@@ -14,7 +12,6 @@ const NotFoundPage = lazy(() => import('features/common/NotFoundPage'))
 
 function App() {
     const navigate = useNavigate()
-    const { enqueue } = useToastContext()
     const { error } = useCurrentUserQuery()
 
     useEffect(() => {
@@ -31,21 +28,7 @@ function App() {
                 <Route path="bookmarks" element={<>Bookmarks</>} />
                 <Route path="hashtag/:name" element={<>Hashtag name</>} />
                 <Route path=":username" element={<ProfilePage />}>
-                    <Route
-                        index
-                        element={
-                            <>
-                                Tweets
-                                <Button
-                                    onClick={() => {
-                                        enqueue('halo')
-                                    }}
-                                >
-                                    enqueue
-                                </Button>
-                            </>
-                        }
-                    />
+                    <Route index element={<>Tweets</>} />
                     <Route path="replies" element={<>Tweets and replies</>} />
                     <Route path="media" element={<>Media</>} />
                     <Route path="likes" element={<>Likes</>} />
