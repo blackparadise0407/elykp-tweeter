@@ -1,4 +1,4 @@
-import { useQuery } from '@apollo/client'
+import { useLazyQuery, useQuery } from '@apollo/client'
 
 import { GET_TWEET_QUERY } from 'graphqlClient/queries/tweetQuery'
 
@@ -6,6 +6,7 @@ export interface GetTweetInput {
     limit: number
     afterCursor: string | null
     beforeCursor?: string | null
+    userId?: string
 }
 
 export interface GetTweetOutput {
@@ -14,7 +15,7 @@ export interface GetTweetOutput {
 }
 
 export const useGetTweetQuery = (query: GetTweetInput) =>
-    useQuery<
+    useLazyQuery<
         { getTweet: GetTweetOutput },
         {
             getTweetInput: GetTweetInput
@@ -24,9 +25,3 @@ export const useGetTweetQuery = (query: GetTweetInput) =>
         fetchPolicy: 'cache-and-network',
         notifyOnNetworkStatusChange: true,
     })
-
-// export const useRe = (query: GetTweetInput) =>
-//     useApolloClient().watchQuery({
-//         query: GET_TWEET_QUERY,
-//         variables: { getTweetInput: query },
-//     })

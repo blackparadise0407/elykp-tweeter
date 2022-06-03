@@ -9,6 +9,7 @@ import { MainLayout } from 'layouts/main'
 const HomePage = lazy(() => import('features/tweet/HomePage'))
 const ProfilePage = lazy(() => import('features/user/ProfilePage'))
 const NotFoundPage = lazy(() => import('features/common/NotFoundPage'))
+const UserTweetList = lazy(() => import('features/user/UserTweetList'))
 
 function App() {
     const navigate = useNavigate()
@@ -28,7 +29,7 @@ function App() {
                 <Route path="bookmarks" element={<>Bookmarks</>} />
                 <Route path="hashtag/:name" element={<>Hashtag name</>} />
                 <Route path=":username" element={<ProfilePage />}>
-                    <Route index element={<>Tweets</>} />
+                    <Route index element={<UserTweetList />} />
                     <Route path="replies" element={<>Tweets and replies</>} />
                     <Route path="media" element={<>Media</>} />
                     <Route path="likes" element={<>Likes</>} />

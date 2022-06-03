@@ -29,5 +29,5 @@ export async function imgPreview(
 }
 
 export const blobToFile = (blob: Blob, name: string): File => {
-    return new File([blob], name)
+    return new File([blob], name, { type: blob.type })
 }

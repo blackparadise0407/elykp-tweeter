@@ -16,7 +16,7 @@ const FETCH_LIMIT = 5
 
 export default function HomePage() {
     const { t } = useTranslation()
-    const { data, loading, fetchMore } = useGetTweetQuery({
+    const [getTweetQueryLazy, { data, loading, fetchMore }] = useGetTweetQuery({
         limit: FETCH_LIMIT,
         beforeCursor: null,
         afterCursor: null,
@@ -41,6 +41,7 @@ export default function HomePage() {
     })
 
     useEffect(() => {
+        getTweetQueryLazy()
         return () => {
             cache.evict({
                 id: 'ROOT_QUERY',

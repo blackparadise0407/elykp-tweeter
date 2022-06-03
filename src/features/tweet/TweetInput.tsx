@@ -1,10 +1,4 @@
-import {
-    ChangeEventHandler,
-    KeyboardEventHandler,
-    useCallback,
-    useRef,
-    useState,
-} from 'react'
+import { KeyboardEventHandler, useCallback, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { AiOutlineDelete, AiOutlinePicture } from 'react-icons/ai'
 import { MdGroup, MdPublic } from 'react-icons/md'
@@ -66,69 +60,38 @@ export default function TweetInput() {
         }
     }
 
-    // const handleUploadFile = useCallback(
-    //     async (file: File) => {
-    //         console.log(userData)
-    //         if (userData?.currentUser) {
-    //             if (!isValidMimeType(file)) {
-    //                 enqueue(t('validation.file_type_not_supported'), {
-    //                     variant: 'warning',
-    //                 })
-    //                 return
-    //             }
-    //             if (!isUnderLimitSize(file)) {
-    //                 enqueue(t('validation.file_too_large'), {
-    //                     variant: 'warning',
-    //                 })
-    //                 return
-    //             }
-    //             try {
-    //                 const { data } = await uploadFileMutation({
-    //                     variables: {
-    //                         fileUploadInput: {
-    //                             file,
-    //                             userId: userData.currentUser.id,
-    //                         },
-    //                     },
-    //                 })
-    //                 if (data?.uploadFile) {
-    //                     setTempFile(data.uploadFile.id)
-    //                 }
-    //             } catch (error) {}
-    //         }
-    //     },
-    //     [userData?.currentUser],
-    // )
-    const handleUploadFile = async (file: File) => {
-        if (userData?.currentUser) {
-            console.log(file)
-            if (!isValidMimeType(file)) {
-                enqueue(t('validation.file_type_not_supported'), {
-                    variant: 'warning',
-                })
-                return
-            }
-            if (!isUnderLimitSize(file)) {
-                enqueue(t('validation.file_too_large'), {
-                    variant: 'warning',
-                })
-                return
-            }
-            try {
-                const { data } = await uploadFileMutation({
-                    variables: {
-                        fileUploadInput: {
-                            file,
-                            userId: userData.currentUser.id,
-                        },
-                    },
-                })
-                if (data?.uploadFile) {
-                    setTempFile(data.uploadFile.id)
+    const handleUploadFile = useCallback(
+        async (file: File) => {
+            if (userData?.currentUser) {
+                if (!isValidMimeType(file)) {
+                    enqueue(t('validation.file_type_not_supported'), {
+                        variant: 'warning',
+                    })
+                    return
                 }
-            } catch (error) {}
-        }
-    }
+                if (!isUnderLimitSize(file)) {
+                    enqueue(t('validation.file_too_large'), {
+                        variant: 'warning',
+                    })
+                    return
+                }
+                try {
+                    const { data } = await uploadFileMutation({
+                        variables: {
+                            fileUploadInput: {
+                                file,
+                                userId: userData.currentUser.id,
+                            },
+                        },
+                    })
+                    if (data?.uploadFile) {
+                        setTempFile(data.uploadFile.id)
+                    }
+                } catch (error) {}
+            }
+        },
+        [userData?.currentUser],
+    )
 
     const handleClearFile = async () => {
         if (fileData?.uploadFile) {

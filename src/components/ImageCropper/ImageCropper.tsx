@@ -115,14 +115,14 @@ export default memo(function ImageCropper({
         setCrop(undefined)
     }, [])
 
-    const handleConfirm = useCallback(async () => {
+    const handleConfirm = async () => {
         if (previewCanvasRef.current) {
             const blob = await toBlob(previewCanvasRef.current)
             const file = blobToFile(blob, Date.now().toString())
             onConfirm(file)
             handleCloseCropper()
         }
-    }, [handleCloseCropper])
+    }
 
     const handleInputClick: MouseEventHandler<HTMLInputElement> = (e) => {
         const element = e.target as HTMLInputElement
