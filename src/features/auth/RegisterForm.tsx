@@ -5,6 +5,7 @@ import { useTranslation } from 'react-i18next'
 import { AiOutlineLock, AiOutlineMail, AiOutlineUser } from 'react-icons/ai'
 
 import { Button, TextField } from 'components'
+import { useToast } from 'contexts/toast/ToastContext'
 import { REGISTER_MUTATION } from 'graphqlClient/queries/authQuery'
 
 import { registerSchema } from './schema'
@@ -17,6 +18,7 @@ export interface RegisterForm {
 }
 
 export default function RegisterForm() {
+    const { enqueue } = useToast()
     const [registerMutation, { loading }] = useMutation<{
         register: string
     }>(REGISTER_MUTATION)
@@ -35,8 +37,10 @@ export default function RegisterForm() {
             const res = await registerMutation({
                 variables: { registerInput: data },
             })
-            console.log(res)
-        } catch (e) {}
+            enqueue(res.data?.register, { variant: 'success' })
+        } catch (e: any) {
+            enqueue(e?.message, { variant: 'error' })
+        }
     }
 
     return (

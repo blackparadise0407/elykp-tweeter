@@ -66,14 +66,16 @@ export default memo(function Tweet({ data }: TweetProps) {
                     className="text-neutral-600 whitespace-pre-wrap dark:text-white text-sm md:text-base"
                 ></p>
                 {photoId && (
-                    <div
+                    <img
+                        loading="lazy"
                         className="rounded-lg mt-5 w-full aspect-video"
-                        style={{
-                            background: `url(http://localhost:5000/api/attachment/${photoId})`,
-                            backgroundPosition: 'center',
-                            backgroundRepeat: 'no-repeat',
-                            backgroundSize: 'cover',
-                        }}
+                        src={`http://localhost:5000/api/attachment/${photoId}`}
+                        // style={{
+                        //     background: `url(http://localhost:5000/api/attachment/${photoId})`,
+                        //     backgroundPosition: 'center',
+                        //     backgroundRepeat: 'no-repeat',
+                        //     backgroundSize: 'cover',
+                        // }}
                     />
                 )}
             </div>

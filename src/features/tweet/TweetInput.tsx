@@ -1,6 +1,7 @@
 import {
     ChangeEventHandler,
     KeyboardEventHandler,
+    useCallback,
     useRef,
     useState,
 } from 'react'
@@ -9,7 +10,8 @@ import { AiOutlineDelete, AiOutlinePicture } from 'react-icons/ai'
 import { MdGroup, MdPublic } from 'react-icons/md'
 import ReactTextareaAutosize from 'react-textarea-autosize'
 
-import { Avatar, Button, Card } from 'components'
+import { Avatar, Button, Card, ImageCropper } from 'components'
+import { useToast } from 'contexts/toast'
 import { useDeleleteFileMutation } from 'features/common/hooks/useDeleteFileMutation'
 import { useUploadFileMutation } from 'features/common/hooks/useUploadFileMutation'
 import { useCreateTweetMutation } from 'features/tweet/hooks/useCreateTweetMutation'
@@ -19,12 +21,13 @@ import { extractTags } from 'helpers/string'
 
 export default function TweetInput() {
     const { t } = useTranslation()
+    const { enqueue } = useToast()
     const [createTweet, { loading }] = useCreateTweetMutation()
-    const [uploadFileMutation, { data: fileData }] = useUploadFileMutation()
+    const [uploadFileMutation, { data: fileData, loading: fileLoading }] =
+        useUploadFileMutation()
     const [deleteFileMutation] = useDeleleteFileMutation()
     const { data: userData } = useCurrentUserQuery()
     const [val, setVal] = useState('')
-    const fileInputRef = useRef<HTMLInputElement>(null)
 
     const [tempFile, setTempFile] = useState('')
 
@@ -63,24 +66,52 @@ export default function TweetInput() {
         }
     }
 
-    const handleOpenInput = () => {
-        if (fileInputRef.current) {
-            fileInputRef.current.click()
-        }
-    }
-
-    const handleFileChange: ChangeEventHandler<HTMLInputElement> = async (
-        e,
-    ) => {
-        const { files } = e.target
-        if (files?.length && userData?.currentUser) {
-            const file = files[0]
+    // const handleUploadFile = useCallback(
+    //     async (file: File) => {
+    //         console.log(userData)
+    //         if (userData?.currentUser) {
+    //             if (!isValidMimeType(file)) {
+    //                 enqueue(t('validation.file_type_not_supported'), {
+    //                     variant: 'warning',
+    //                 })
+    //                 return
+    //             }
+    //             if (!isUnderLimitSize(file)) {
+    //                 enqueue(t('validation.file_too_large'), {
+    //                     variant: 'warning',
+    //                 })
+    //                 return
+    //             }
+    //             try {
+    //                 const { data } = await uploadFileMutation({
+    //                     variables: {
+    //                         fileUploadInput: {
+    //                             file,
+    //                             userId: userData.currentUser.id,
+    //                         },
+    //                     },
+    //                 })
+    //                 if (data?.uploadFile) {
+    //                     setTempFile(data.uploadFile.id)
+    //                 }
+    //             } catch (error) {}
+    //         }
+    //     },
+    //     [userData?.currentUser],
+    // )
+    const handleUploadFile = async (file: File) => {
+        if (userData?.currentUser) {
+            console.log(file)
             if (!isValidMimeType(file)) {
-                console.log('Invalid file type')
+                enqueue(t('validation.file_type_not_supported'), {
+                    variant: 'warning',
+                })
                 return
             }
             if (!isUnderLimitSize(file)) {
-                console.log('File is too large')
+                enqueue(t('validation.file_too_large'), {
+                    variant: 'warning',
+                })
                 return
             }
             try {
@@ -128,7 +159,9 @@ export default function TweetInput() {
                         <div
                             className="relative my-5 w-full aspect-video rounded-lg"
                             style={{
-                                background: `url(http://localhost:5000/api/attachment/${tempFile}) center no-repeat`,
+                                backgroundImage: `url(http://localhost:5000/api/attachment/${tempFile})`,
+                                backgroundRepeat: 'no-repeat',
+                                backgroundPosition: 'center',
                                 backgroundSize: 'cover',
                             }}
                         >
@@ -141,16 +174,13 @@ export default function TweetInput() {
                         </div>
                     )}
                     <div className="flex items-center gap-3">
-                        <div onClick={handleOpenInput}>
-                            <input
-                                ref={fileInputRef}
-                                type="file"
-                                className="hidden"
-                                onChange={handleFileChange}
-                                accept="image/jpeg,image/png"
-                            />
+                        <ImageCropper
+                            aspect={16 / 9}
+                            loading={fileLoading}
+                            onConfirm={handleUploadFile}
+                        >
                             <AiOutlinePicture className="cursor-pointer text-lg text-blue-500" />
-                        </div>
+                        </ImageCropper>
                         <div className="relative max-w-[140px] sm:max-w-[200px] md:max-w-[234px] w-full">
                             <div className="flex items-center gap-1 cursor-pointer text-blue-500 peer">
                                 <MdPublic className="text-lg" />

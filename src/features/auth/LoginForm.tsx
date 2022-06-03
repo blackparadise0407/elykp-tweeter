@@ -7,6 +7,7 @@ import { useNavigate } from 'react-router-dom'
 
 import { Button, TextField } from 'components'
 import { ACCESS_TOKEN } from 'constants/storage'
+import { useToast } from 'contexts/toast/ToastContext'
 import { LOGIN_MUTATION } from 'graphqlClient/queries/authQuery'
 
 import { loginSchema } from './schema'
@@ -18,6 +19,7 @@ export interface LoginForm {
 
 export default function LoginForm() {
     const navigate = useNavigate()
+    const { enqueue } = useToast()
     const [loginMutation, { loading }] = useMutation<
         { login: { accessToken: string; user: any } },
         { loginInput: LoginForm }
@@ -42,7 +44,9 @@ export default function LoginForm() {
                 sessionStorage.setItem(ACCESS_TOKEN, accessToken)
                 navigate('/')
             }
-        } catch (e) {}
+        } catch (e: any) {
+            enqueue(e?.message, { variant: 'error' })
+        }
     }
 
     return (

@@ -40,6 +40,7 @@ module.exports = {
         'import/no-named-as-default-member': 'off',
         'no-empty-function': 'off',
         'no-case-declarations': 'off',
+        'no-debugger': "warn",
         '@typescript-eslint/no-empty-function': [
             'error',
             { allow: ['arrowFunctions'] },

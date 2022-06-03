@@ -1,4 +1,4 @@
-const VALID_MIME_TYPE = ['image/jpeg', 'image/png']
+const VALID_MIME_TYPE = ['image/jpeg', 'image/png', 'image/jpg']
 
 /**
  *

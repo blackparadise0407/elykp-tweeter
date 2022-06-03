@@ -2,7 +2,6 @@ import clsx from 'clsx'
 import { memo, useEffect, useRef } from 'react'
 import {
     AiOutlineCheckCircle,
-    AiOutlineClose,
     AiOutlineCloseCircle,
     AiOutlineInfoCircle,
     AiOutlineWarning,
@@ -118,10 +117,6 @@ export default memo(function Toast({ data, onClose = () => {} }: ToastProps) {
                 className="absolute z-[1] top-0 left-0 w-full h-full cursor-pointer"
                 onClick={handleClose}
             ></div>
-            {/* <AiOutlineClose
-                className="absolute top-2 right-2 text-lg cursor-pointer text-black"
-                onClick={handleClose}
-            /> */}
         </div>
     )
 })

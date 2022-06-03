@@ -63,7 +63,7 @@ declare global {
 
     interface ToastContext {
         items: Toast[]
-        enqueue: (message: string, opts?: ToastOptions) => void
+        enqueue: (message?: string, opts?: ToastOptions) => void
         remove: (id: number) => void
     }
 }

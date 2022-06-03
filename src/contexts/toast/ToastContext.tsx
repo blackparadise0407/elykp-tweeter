@@ -45,7 +45,7 @@ export const ToastProvider = ({ children }: ToastProviderProps) => {
     const [toasts, setToasts] = useState<Toast[]>(defaultValue.items)
 
     const handleEnqueueToast = useCallback(
-        (message: string, opts: ToastOptions = {}) => {
+        (message?: string, opts: ToastOptions = {}) => {
             const { variant = 'success' } = opts
             const toast: Toast = {
                 id: Date.now(),
@@ -110,6 +110,6 @@ export const ToastProvider = ({ children }: ToastProviderProps) => {
     )
 }
 
-export const useToastContext = () => {
+export const useToast = () => {
     return useContext(ToastContext)
 }

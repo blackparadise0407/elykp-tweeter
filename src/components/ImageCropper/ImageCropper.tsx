@@ -136,7 +136,7 @@ export default memo(function ImageCropper({
                 ref={inputRef}
                 type="file"
                 className="hidden"
-                accept="image/jpeg,image/png"
+                accept="image/*"
                 onChange={onSelectFile}
                 onClick={handleInputClick}
             />
