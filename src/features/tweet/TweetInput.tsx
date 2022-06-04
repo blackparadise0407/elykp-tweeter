@@ -1,3 +1,4 @@
+import clsx from 'clsx'
 import { KeyboardEventHandler, useCallback, useState } from 'react'
 import { useTranslation } from 'react-i18next'
 import { AiOutlineDelete, AiOutlinePicture } from 'react-icons/ai'
@@ -13,6 +14,19 @@ import { useCurrentUserQuery } from 'features/user/hooks/useCurrentUserQuery'
 import { isUnderLimitSize, isValidMimeType } from 'helpers/file'
 import { extractTags } from 'helpers/string'
 
+const tweetPrivacyOpts = [
+    {
+        transKey: 'everyone',
+        value: false,
+        icon: <MdPublic />,
+    },
+    {
+        transKey: 'people_you_follow',
+        value: true,
+        icon: <MdGroup />,
+    },
+]
+
 export default function TweetInput() {
     const { t } = useTranslation()
     const { enqueue } = useToast()
@@ -22,6 +36,7 @@ export default function TweetInput() {
     const [deleteFileMutation] = useDeleleteFileMutation()
     const { data: userData } = useCurrentUserQuery()
     const [val, setVal] = useState('')
+    const [isPrivateTweet, setIsPrivateTweet] = useState(false)
 
     const [tempFile, setTempFile] = useState('')
 
@@ -36,6 +51,7 @@ export default function TweetInput() {
                             userId: userData.currentUser.id,
                             photoId: tempFile ?? undefined,
                             tags,
+                            private: isPrivateTweet,
                         },
                     },
                 })
@@ -146,10 +162,21 @@ export default function TweetInput() {
                         </ImageCropper>
                         <div className="relative max-w-[140px] sm:max-w-[200px] md:max-w-[234px] w-full">
                             <div className="flex items-center gap-1 cursor-pointer text-blue-500 peer">
-                                <MdPublic className="text-lg" />
-                                <span className="font-medium text-xs">
-                                    {t('everyone_can_reply')}
-                                </span>
+                                {isPrivateTweet ? (
+                                    <>
+                                        <MdGroup className="text-lg" />
+                                        <span className="font-medium text-xs">
+                                            {t('people_you_follow_can_reply')}
+                                        </span>
+                                    </>
+                                ) : (
+                                    <>
+                                        <MdPublic className="text-lg" />
+                                        <span className="font-medium text-xs">
+                                            {t('everyone_can_reply')}
+                                        </span>
+                                    </>
+                                )}
                             </div>
                             <div
                                 className="absolute hidden top-[calc(100%+15px)] left-0 px-3 py-2 bg-white dark:bg-neutral-800 shadow border border-gray-200 dark:border-neutral-700  rounded-lg 
@@ -164,18 +191,26 @@ export default function TweetInput() {
                                     {t('choose_who_can_reply_to_this_tweet')}
                                 </span>
                                 <div className="flex flex-col text-gray-600 dark:text-gray-400 mt-3">
-                                    <span className="flex items-center gap-2 p-3 hover:bg-neutral-100 dark:hover:bg-neutral-700 transition-colors rounded-lg cursor-pointer">
-                                        <MdPublic className="text-lg" />
-                                        <span className="text-xs">
-                                            {t('everyone')}
-                                        </span>
-                                    </span>
-                                    <span className="flex items-center gap-2 p-3 hover:bg-neutral-100 dark:hover:bg-neutral-700 transition-colors rounded-lg cursor-pointer">
-                                        <MdGroup className="text-lg" />
-                                        <span className="text-xs">
-                                            {t('people_you_follow')}
-                                        </span>
-                                    </span>
+                                    {tweetPrivacyOpts.map(
+                                        ({ transKey, value, icon }) => (
+                                            <span
+                                                key={transKey}
+                                                className={clsx(
+                                                    'flex items-center gap-2 p-3 hover:bg-neutral-100 dark:hover:bg-neutral-700 transition-colors rounded-lg cursor-pointer',
+                                                    value === isPrivateTweet &&
+                                                        'text-blue-500',
+                                                )}
+                                                onClick={() =>
+                                                    setIsPrivateTweet(value)
+                                                }
+                                            >
+                                                {icon}
+                                                <span className="text-xs">
+                                                    {t(transKey)}
+                                                </span>
+                                            </span>
+                                        ),
+                                    )}
                                 </div>
                             </div>
                         </div>
@@ -184,6 +219,7 @@ export default function TweetInput() {
                             small
                             className="text-xs capitalize"
                             loading={loading}
+                            disabled={!val}
                             onClick={handleCreateTweet}
                         >
                             {t('tweet')}

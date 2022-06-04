@@ -10,7 +10,7 @@ import { useInfiniteScroll } from 'hooks/useInfiniteScroll'
 
 import { useGetUserFromUrl } from './hooks/useGetUserFromUrl'
 
-const FETCH_LIMIT = 2
+const FETCH_LIMIT = 5
 
 export default function UserTweetList() {
     const { t } = useTranslation()

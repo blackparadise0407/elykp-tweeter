@@ -21,6 +21,7 @@ import {
     Backdrop,
     Button,
     ImageCropper,
+    Modal,
     NotFound,
     SideNavigation,
     Spinner,
@@ -219,9 +220,9 @@ export default function ProfilePage() {
                             </ImageCropper>
                         )}
                     </div>
-                    <div>
+                    <div className="overflow-hidden">
                         <div className="flex items-center flex-col md:flex-row gap-1 md:gap-6 flex-wrap">
-                            <span className="flex-1 min-w-0 truncate text-2xl font-bold text-neutral-800 dark:text-white">
+                            <span className="truncate text-2xl font-bold text-neutral-800 dark:text-white">
                                 {user.username}
                             </span>
                             <div className="flex items-center gap-4 capitalize">
@@ -286,7 +287,7 @@ export default function ProfilePage() {
                         Follow
                     </Button>
                 </div>
-                <div className="flex gap-6 mt-6">
+                <div className="flex gap-6 mt-6 flex-col md:flex-row">
                     <SideNavigation
                         items={[
                             { to: '', transKey: 'tweets', cb: () => {} },
@@ -299,11 +300,14 @@ export default function ProfilePage() {
                             { to: 'likes', transKey: 'likes', cb: () => {} },
                         ]}
                     />
-                    <div>
+                    <div className="flex-1">
                         <Outlet />
                     </div>
                 </div>
             </div>
+            <Modal title={t('update_profile')} open={true}>
+                Profile update
+            </Modal>
         </Fragment>
     )
 }

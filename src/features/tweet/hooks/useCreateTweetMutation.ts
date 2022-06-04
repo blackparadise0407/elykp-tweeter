@@ -15,6 +15,7 @@ export const useCreateTweetMutation = () =>
                 text: string
                 photoId?: string
                 tags: string[]
+                private?: boolean
             }
         }
     >(CREATE_TWEET_MUTATION, {

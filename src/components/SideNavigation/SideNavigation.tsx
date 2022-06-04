@@ -17,7 +17,7 @@ export default memo(function SideNavigation({ items }: SideNavigationProps) {
     const { t } = useTranslation()
 
     return (
-        <div className="py-5 bg-white dark:bg-neutral-800 shadow rounded-lg max-w-[304px] min-w-[304px] w-full h-fit">
+        <div className="py-5 bg-white dark:bg-neutral-800 shadow rounded-lg w-full md:max-w-[304px] md:min-w-[304px] w-full h-fit">
             {items.map(({ to, transKey, cb }) => (
                 <NavLink
                     end
