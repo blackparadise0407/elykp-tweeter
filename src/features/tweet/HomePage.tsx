@@ -49,7 +49,7 @@ export default function HomePage() {
         return () => {
             cache.evict({
                 id: 'ROOT_QUERY',
-                fieldName: 'getTweet',
+                fieldName: 'tweets',
             })
         }
     }, [])

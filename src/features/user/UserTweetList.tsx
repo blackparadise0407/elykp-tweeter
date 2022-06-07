@@ -47,7 +47,7 @@ export default function UserTweetList() {
         return () => {
             cache.evict({
                 id: 'ROOT_QUERY',
-                fieldName: 'getTweet',
+                fieldName: 'tweets',
             })
         }
     }, [])

@@ -51,7 +51,7 @@ export default memo(function Tweet({ data }: TweetProps) {
     return (
         <div className="bg-white dark:bg-neutral-800 p-5 rounded-lg shadow">
             <div className="flex items-center gap-4">
-                <Avatar userId={currentUserData?.currentUser?.avatarId} />
+                <Avatar userId={user?.avatarId} />
                 <div className="flex flex-col">
                     <span>
                         <Link
@@ -124,7 +124,7 @@ export default memo(function Tweet({ data }: TweetProps) {
                 </Button>
             </div>
             <div className="flex items-center gap-4 mt-2">
-                <Avatar userId={user?.avatarId} />
+                <Avatar userId={currentUserData?.currentUser.avatarId} />
                 <ReactTextareaAutosize
                     ref={replyInputRef}
                     className="textarea bg-neutral-100 dark:bg-neutral-700 text-black dark:text-white py-2 md:py-2.5 px-3 rounded-lg border border-gray-200 dark:border-neutral-600"

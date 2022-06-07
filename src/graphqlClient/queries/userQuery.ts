@@ -32,6 +32,8 @@ export const USER_QUERY = gql`
                 description
                 coverPhotoId
             }
+            followingCount
+            followerCount
         }
     }
 `
@@ -51,6 +53,34 @@ export const UPDATE_CURRENT_USER_PROFILE_MUTATION = gql`
 export const UPDATE_CURRENT_USER_AVATAR_MUTATION = gql`
     mutation UpdateCurrentUserAvatar($avatarId: String!) {
         updateCurrentUserAvatar(avatarId: $avatarId) {
+            id
+        }
+    }
+`
+
+export const FOLLOW_MUTATION = gql`
+    mutation FollowMutation($followingId: String!) {
+        follow(followingId: $followingId)
+    }
+`
+
+export const UNFOLLOW_MUTATION = gql`
+    mutation UnfollowMutation($unfollowingId: String!) {
+        unfollow(unfollowingId: $unfollowingId)
+    }
+`
+
+export const FOLLOWERS_QUERY = gql`
+    query FollowersQuery($userId: String!) {
+        followers(userId: $userId) {
+            id
+        }
+    }
+`
+
+export const FOLLOWINGS_QUERY = gql`
+    query FollowingsQuery($userId: String!) {
+        followings(userId: $userId) {
             id
         }
     }

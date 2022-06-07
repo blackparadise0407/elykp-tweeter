@@ -32,6 +32,10 @@ import { useToast } from 'contexts/toast/ToastContext'
 import { useUploadFileMutation } from 'features/common/hooks/useUploadFileMutation'
 import { useCurrentUserQuery } from 'features/user/hooks/useCurrentUserQuery'
 
+import { useFollowersLazyQuery } from './hooks/useFollowersLazyQuery'
+import { useFollowingsLazyQuery } from './hooks/useFollowingsLazyQuery'
+import { useFollowMutation } from './hooks/useFollowMutation copy'
+import { useUnfollowMutation } from './hooks/useUnfollowMutation'
 import { useUpdateCurrentUserAvatarMutation } from './hooks/useUpdateCurrentUserAvatarMutation'
 import { useUpdateCurrentUserProfileMutation } from './hooks/useUpdateCurrentUserProfileMutation'
 import { useUserLazyQuery } from './hooks/useUserLazyQuery'
@@ -56,6 +60,11 @@ export default function ProfilePage() {
         updateCurrentUserProfileMutation,
         { loading: updateProfileLoading },
     ] = useUpdateCurrentUserProfileMutation()
+    const [followMutation] = useFollowMutation()
+    const [unfollowMutation] = useUnfollowMutation()
+    const [followingsLazyQuery] = useFollowingsLazyQuery()
+    const [followersLazyQuery] = useFollowersLazyQuery()
+
     const [isEditingProfile, setIsEditingProfile] = useState(false)
     const textareaRef = useRef<HTMLTextAreaElement>(null)
     const {
@@ -161,14 +170,37 @@ export default function ProfilePage() {
     )
 
     const handleUpdateProfile = () => {
-        handleSubmit((data) => {
-            console.log(data)
-        })()
+        handleSubmit((data) => {})()
     }
+
     const handleCloseUpdateModal = useCallback(
         () => setIsEditingProfile(false),
         [],
     )
+
+    const handleFollowUser = async () => {
+        if (data?.user) {
+            try {
+                const res = await followMutation({
+                    variables: {
+                        followingId: data.user.id,
+                    },
+                })
+            } catch (e) {}
+        }
+    }
+
+    const handleUnfollowUser = async () => {
+        if (data?.user) {
+            try {
+                const res = await unfollowMutation({
+                    variables: {
+                        unfollowingId: data.user.id,
+                    },
+                })
+            } catch (e) {}
+        }
+    }
 
     useEffect(() => {
         userLazyQuery({ variables: { username } })
@@ -200,19 +232,21 @@ export default function ProfilePage() {
                     backgroundSize: 'cover',
                 }}
             >
-                <ImageCropper
-                    loading={uploadFileLoading || updateProfileLoading}
-                    aspect={3 / 1}
-                    onConfirm={handleUploadCoverPhoto}
-                >
-                    <Button
-                        small
-                        icon={<AiOutlineCamera />}
-                        className="absolute top-2 right-2"
+                {isCurrentUser && (
+                    <ImageCropper
+                        loading={uploadFileLoading || updateProfileLoading}
+                        aspect={3 / 1}
+                        onConfirm={handleUploadCoverPhoto}
                     >
-                        Change cover photo
-                    </Button>
-                </ImageCropper>
+                        <Button
+                            small
+                            icon={<AiOutlineCamera />}
+                            className="absolute top-2 right-2"
+                        >
+                            {t('change_cover_photo')}
+                        </Button>
+                    </ImageCropper>
+                )}
             </div>
             <div className="container relative z-[1] px-2 md:px-10 lg:px-20 mx-auto -mt-16">
                 <div className="flex items-center md:items-start flex-col md:flex-row gap-6 bg-white dark:bg-neutral-800 shadow w-full rounded-lg py-6 px-7 min-h-[163px]">
@@ -249,18 +283,22 @@ export default function ProfilePage() {
                             <div className="flex items-center gap-4 capitalize">
                                 <span className="font-medium text-xs md:text-sm whitespace-nowrap">
                                     <b className="text-black dark:text-white">
-                                        2,569
+                                        {user.followingCount}
                                     </b>{' '}
                                     <span className="text-neutral-500">
-                                        {t('following')}
+                                        {user.followingCount <= 1
+                                            ? t('following')
+                                            : t('followings')}
                                     </span>
                                 </span>
                                 <span className="font-medium text-xs md:text-sm whitespace-nowrap">
                                     <b className="text-black dark:text-white">
-                                        10.8K
+                                        {user.followerCount}
                                     </b>{' '}
                                     <span className="text-neutral-500">
-                                        {t('followers')}
+                                        {user.followerCount <= 1
+                                            ? t('follower')
+                                            : t('followers')}
                                     </span>
                                 </span>
                             </div>
@@ -277,12 +315,25 @@ export default function ProfilePage() {
                             icon={<AiOutlineEdit />}
                             onClick={() => setIsEditingProfile(true)}
                         >
-                            Edit profile
+                            {t('edit_profile')}
                         </Button>
                     ) : (
-                        <Button small icon={<AiOutlineUserAdd />}>
-                            Follow
-                        </Button>
+                        <>
+                            <Button
+                                small
+                                icon={<AiOutlineUserAdd />}
+                                onClick={handleUnfollowUser}
+                            >
+                                {t('unfollow')}
+                            </Button>
+                            <Button
+                                small
+                                icon={<AiOutlineUserAdd />}
+                                onClick={handleFollowUser}
+                            >
+                                {t('follow')}
+                            </Button>
+                        </>
                     )}
                 </div>
                 <div className="flex gap-6 mt-6 flex-col md:flex-row">

@@ -43,6 +43,7 @@
     "tweets_and_replies": "Tweet & replies",
     "likes": "Likes",
     "following": "Following",
+    "followings": "Followings",
     "follower": "Follower",
     "followers": "Followers",
     "cancel": "cancel",
@@ -51,5 +52,7 @@
     "update_profile": "Update profile",
     "update": "update",
     "full_name": "Full name",
-    "description": "Description"
+    "description": "Description",
+    "follow": "Follow",
+    "unfollow": "Unfollow"
 }

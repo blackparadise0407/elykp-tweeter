@@ -11,6 +11,8 @@ declare global {
         profileId: number
         avatarId?: string
         avatar?: Attachment
+        followingCount: number
+        followerCount: number
     }
 
     interface Profile {

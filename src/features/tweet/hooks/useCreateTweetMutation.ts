@@ -21,7 +21,7 @@ export const useCreateTweetMutation = () =>
     >(CREATE_TWEET_MUTATION, {
         refetchQueries: [
             TWEETS_QUERY,
-            'GetTweetQuery',
+            'TweetsQuery',
             TOP_TWEETED_TAG_COUNT_QUERY,
             'TopTweetedTagCountQuery',
         ],
