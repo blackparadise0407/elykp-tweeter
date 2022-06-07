@@ -14,7 +14,8 @@
         "password_no_match": "Passwords do not match",
         "password_must_contain_minimum_3_characters": "Password must contain minimum 3 characters",
         "password_must_contain_maximum_128_characters": "Password must contain maximum 128 characters",
-        "email_must_be_valid_email": "Email must be valid email"
+        "email_must_be_valid_email": "Email must be valid email",
+        "full_name_required": "Full name is required"
     },
     "home": "home",
     "explore": "explore",
@@ -46,5 +47,9 @@
     "followers": "Followers",
     "cancel": "cancel",
     "confirm": "confirm",
-    "select_image": "Select image"
+    "select_image": "Select image",
+    "update_profile": "Update profile",
+    "update": "update",
+    "full_name": "Full name",
+    "description": "Description"
 }

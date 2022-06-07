@@ -1,5 +1,5 @@
 import dayjs from 'dayjs'
-import React, { memo } from 'react'
+import React, { memo, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { AiOutlineSync } from 'react-icons/ai'
 import { BsChatRight, BsHeart, BsBookmark } from 'react-icons/bs'
@@ -35,7 +35,15 @@ const _renderText = (text: string, tags: Tag[]) => {
 
 export default memo(function Tweet({ data }: TweetProps) {
     const { t } = useTranslation()
+    const replyInputRef = useRef<HTMLTextAreaElement>(null)
     const { data: currentUserData } = useCurrentUserQuery()
+
+    const handleReplyInputFocus = () => {
+        if (replyInputRef.current) {
+            replyInputRef.current.focus()
+        }
+    }
+
     if (!data) return null
 
     const { text, tags, user, updatedAt, photoId } = data
@@ -89,6 +97,7 @@ export default memo(function Tweet({ data }: TweetProps) {
                     type="link"
                     block
                     className="flex items-center gap-3 font-medium"
+                    onClick={handleReplyInputFocus}
                 >
                     <BsChatRight className="text-gray-800 dark:text-gray-300" />
                     <span className="text-sm hidden lg:block capitalize text-gray-800 dark:text-gray-300">
@@ -117,6 +126,7 @@ export default memo(function Tweet({ data }: TweetProps) {
             <div className="flex items-center gap-4 mt-2">
                 <Avatar userId={user?.avatarId} />
                 <ReactTextareaAutosize
+                    ref={replyInputRef}
                     className="textarea bg-neutral-100 dark:bg-neutral-700 text-black dark:text-white py-2 md:py-2.5 px-3 rounded-lg border border-gray-200 dark:border-neutral-600"
                     maxRows={5}
                     minRows={1}

@@ -33,7 +33,7 @@ export default memo(function Modal({
     if (!open) return null
     return (
         <Backdrop centerChildren>
-            <div className="relative bg-white dark:bg-neutral-700 p-5 shadow rounded-lg max-w-[636px] w-full">
+            <div className="relative bg-white dark:bg-neutral-700 p-5 shadow rounded-lg max-w-[636px] w-full mx-2">
                 <div className="pr-6">
                     {typeof title === 'string' ? (
                         <span className="font-semibold text-xs md:text-sm text-black dark:text-white">

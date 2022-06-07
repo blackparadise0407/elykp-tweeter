@@ -104,7 +104,7 @@ export default memo(function Toast({ data, onClose = () => {} }: ToastProps) {
         >
             <div
                 className={clsx(
-                    'absolute h-full w-3 top-0 -z-[1] -left-[5px] rounded-l-lg',
+                    'absolute h-full w-[10px] top-0 -z-[1] -left-[4px] rounded-l-lg',
                     getLineClassFromVariant(variant),
                 )}
             ></div>

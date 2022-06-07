@@ -34,7 +34,7 @@ export default memo(function Button({
     return (
         <button
             className={clsx(
-                'flex items-center justify-center gap-3 py-2 px-6 font-medium text-xs md:text-base border border-transparent rounded-lg select-none transition-all',
+                'flex items-center justify-center gap-3 py-2 px-6 font-medium text-xs md:text-base border border-transparent rounded-lg select-none transition-all whitespace-nowrap',
                 small && 'md:text-sm',
                 block && 'w-full block',
                 getStyleFromType(type),

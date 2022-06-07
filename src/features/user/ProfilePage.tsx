@@ -1,3 +1,4 @@
+import { yupResolver } from '@hookform/resolvers/yup'
 import {
     Fragment,
     useCallback,
@@ -6,6 +7,7 @@ import {
     useRef,
     useState,
 } from 'react'
+import { useForm } from 'react-hook-form'
 import { useTranslation } from 'react-i18next'
 import {
     AiOutlineCamera,
@@ -25,6 +27,8 @@ import {
     NotFound,
     SideNavigation,
     Spinner,
+    Textarea,
+    TextField,
 } from 'components'
 import { useToast } from 'contexts/toast/ToastContext'
 import { useUploadFileMutation } from 'features/common/hooks/useUploadFileMutation'
@@ -33,6 +37,12 @@ import { useCurrentUserQuery } from 'features/user/hooks/useCurrentUserQuery'
 import { useGetUserLazyQuery } from './hooks/useGetUserLazyQuery'
 import { useUpdateCurrentUserAvatarMutation } from './hooks/useUpdateCurrentUserAvatarMutation'
 import { useUpdateCurrentUserProfileMutation } from './hooks/useUpdateCurrentUserProfileMutation'
+import { profileUpdateSchema } from './schema'
+
+export interface ProfileUpdateForm {
+    fullName?: string
+    description?: string
+}
 
 export default function ProfilePage() {
     const { t } = useTranslation()
@@ -48,8 +58,15 @@ export default function ProfilePage() {
         updateCurrentUserProfileMutation,
         { loading: updateProfileLoading },
     ] = useUpdateCurrentUserProfileMutation()
-    const [isEditingDesc, setIsEditingDesc] = useState(false)
+    const [isEditingProfile, setIsEditingProfile] = useState(false)
     const textareaRef = useRef<HTMLTextAreaElement>(null)
+    const {
+        formState: { errors },
+        register,
+        handleSubmit,
+    } = useForm<ProfileUpdateForm>({
+        resolver: yupResolver(profileUpdateSchema),
+    })
 
     const isCurrentUser = useMemo(
         () => currentUserData?.currentUser.id === data?.getUser.id,
@@ -63,7 +80,6 @@ export default function ProfilePage() {
                     data?.getUser.profile.description ===
                     textareaRef.current.value
                 ) {
-                    setIsEditingDesc(false)
                     return
                 }
                 await updateCurrentUserProfileMutation({
@@ -76,20 +92,18 @@ export default function ProfilePage() {
                 enqueue(t('update_profile_success'), {
                     variant: 'success',
                 })
-                setIsEditingDesc(false)
             } catch (e) {}
         }
     }
 
-    const handleClickEdit = () => {
-        setIsEditingDesc(true)
-        setTimeout(() => {
-            if (textareaRef.current) {
-                textareaRef.current.value =
-                    data?.getUser.profile.description ?? ''
-            }
-        }, 0)
-    }
+    // const handleClickEdit = () => {
+    //     setTimeout(() => {
+    //         if (textareaRef.current) {
+    //             textareaRef.current.value =
+    //                 data?.getUser.profile.description ?? ''
+    //         }
+    //     }, 0)
+    // }
 
     const handleUploadAvatar = useCallback(
         async (file: File) => {
@@ -147,6 +161,16 @@ export default function ProfilePage() {
             } catch (e) {}
         },
         [currentUserData],
+    )
+
+    const handleUpdateProfile = () => {
+        handleSubmit((data) => {
+            console.log(data)
+        })()
+    }
+    const handleCloseUpdateModal = useCallback(
+        () => setIsEditingProfile(false),
+        [],
     )
 
     useEffect(() => {
@@ -245,47 +269,24 @@ export default function ProfilePage() {
                             </div>
                         </div>
                         <div className="mt-3 md:mt-6 font-medium text-sm md:text-base text-neutral-500">
-                            {isEditingDesc ? (
-                                <div className="relative">
-                                    <textarea
-                                        ref={textareaRef}
-                                        className="textarea text-sm h-[80px] text-black dark:text-white ring-2 p-2 ring-blue-300 rounded-lg bg-transparent"
-                                        maxLength={255}
-                                    ></textarea>
-                                    <div className="absolute flex gap-2 bottom-3 right-2 text-neutral-500 text-2xl">
-                                        <AiOutlineCloseCircle
-                                            className="cursor-pointer hover:text-red-500 transition-colors"
-                                            onClick={() =>
-                                                setIsEditingDesc(false)
-                                            }
-                                        />
-                                        <AiOutlineCheckCircle
-                                            className="cursor-pointer hover:text-green-500 transition-colors"
-                                            onClick={updateDescription}
-                                        />
-                                    </div>
-                                </div>
-                            ) : (
-                                <p className="">
-                                    {user?.profile?.description &&
-                                        user.profile.description}
-                                    {isCurrentUser && (
-                                        <>
-                                            {' '}
-                                            <AiOutlineEdit
-                                                className="inline text-xl cursor-pointer dark:text-white hover:text-blue-500 transition-colors"
-                                                onClick={handleClickEdit}
-                                            />
-                                        </>
-                                    )}
-                                </p>
-                            )}
+                            {user?.profile?.description &&
+                                user.profile.description}
                         </div>
                     </div>
                     <div className="flex-grow hidden md:block"></div>
-                    <Button small icon={<AiOutlineUserAdd />}>
-                        Follow
-                    </Button>
+                    {isCurrentUser ? (
+                        <Button
+                            small
+                            icon={<AiOutlineEdit />}
+                            onClick={() => setIsEditingProfile(true)}
+                        >
+                            Edit profile
+                        </Button>
+                    ) : (
+                        <Button small icon={<AiOutlineUserAdd />}>
+                            Follow
+                        </Button>
+                    )}
                 </div>
                 <div className="flex gap-6 mt-6 flex-col md:flex-row">
                     <SideNavigation
@@ -305,8 +306,34 @@ export default function ProfilePage() {
                     </div>
                 </div>
             </div>
-            <Modal title={t('update_profile')} open={true}>
-                Profile update
+            <Modal
+                title={t('update_profile')}
+                open={isEditingProfile}
+                okLabel={t('update')}
+                onClose={handleCloseUpdateModal}
+                onOk={handleUpdateProfile}
+            >
+                <form
+                    onSubmit={(e) => e.preventDefault()}
+                    className="space-y-4 mx-1"
+                >
+                    <TextField
+                        label={t('full_name')}
+                        inputProps={{
+                            ...register('fullName'),
+                        }}
+                        error={errors.fullName?.message}
+                    />
+                    <Textarea
+                        label={t('description')}
+                        inputProps={{
+                            maxRows: 5,
+                            minRows: 3,
+                            ...register('description'),
+                        }}
+                        error={errors.description?.message}
+                    />
+                </form>
             </Modal>
         </Fragment>
     )
