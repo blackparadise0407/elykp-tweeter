@@ -1,11 +1,11 @@
 import { useEffect } from 'react'
 import { useParams } from 'react-router-dom'
 
-import { useGetUserLazyQuery } from './useGetUserLazyQuery'
+import { useUserLazyQuery } from './useUserLazyQuery'
 
 export const useGetUserFromUrl = () => {
     const { username } = useParams<{ username: string }>()
-    const [getUserLazyQuery, result] = useGetUserLazyQuery()
+    const [getUserLazyQuery, result] = useUserLazyQuery()
 
     useEffect(() => {
         getUserLazyQuery({ variables: { username } })

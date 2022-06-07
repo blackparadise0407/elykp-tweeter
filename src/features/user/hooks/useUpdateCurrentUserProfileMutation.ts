@@ -1,7 +1,7 @@
 import { useMutation } from '@apollo/client'
 
 import {
-    GET_USER_QUERY,
+    USER_QUERY,
     UPDATE_CURRENT_USER_PROFILE_MUTATION,
 } from 'graphqlClient/queries/userQuery'
 
@@ -16,5 +16,5 @@ export const useUpdateCurrentUserProfileMutation = () =>
             }
         }
     >(UPDATE_CURRENT_USER_PROFILE_MUTATION, {
-        refetchQueries: [GET_USER_QUERY, 'GetUser'],
+        refetchQueries: [USER_QUERY, 'User'],
     })

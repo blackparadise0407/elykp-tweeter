@@ -19,9 +19,9 @@ export const CURRENT_USER_QUERY = gql`
     }
 `
 
-export const GET_USER_QUERY = gql`
-    query GetUser($username: String!) {
-        getUser(username: $username) {
+export const USER_QUERY = gql`
+    query UserQuery($username: String!) {
+        user(username: $username) {
             id
             username
             email

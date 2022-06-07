@@ -7,8 +7,8 @@ import { Card, Spinner } from 'components'
 import { cache } from 'graphqlClient'
 import { useInfiniteScroll } from 'hooks/useInfiniteScroll'
 
-import { useGetTopTweetedTagCountQuery } from './hooks/useGetTopTweetedTagCountQuery'
-import { useGetTweetQuery } from './hooks/useGetTweetQuery'
+import { useTopTweetedTagCountQuery } from './hooks/useTopTweetedTagCountQuery'
+import { useTweetsQuery } from './hooks/useTweetsQuery'
 import Tweet from './Tweet'
 import TweetInput from './TweetInput'
 
@@ -16,32 +16,36 @@ const FETCH_LIMIT = 5
 
 export default function HomePage() {
     const { t } = useTranslation()
-    const [getTweetQueryLazy, { data, loading, fetchMore }] = useGetTweetQuery({
-        limit: FETCH_LIMIT,
-        beforeCursor: null,
-        afterCursor: null,
-    })
-    const { data: topTweetedTagCount } = useGetTopTweetedTagCountQuery()
+    const [getTweetQueryLazy, { data, loading, fetchMore }] = useTweetsQuery()
+    const { data: topTweetedTagCount } = useTopTweetedTagCountQuery()
     const tweetListRef = useRef<HTMLDivElement>(null)
 
     const canFetchMore = useMemo(
-        () => !!data?.getTweet.cursor.afterCursor,
-        [data?.getTweet.cursor.afterCursor],
+        () => !!data?.tweets.cursor.afterCursor,
+        [data?.tweets.cursor.afterCursor],
     )
 
     useInfiniteScroll(tweetListRef, loading, canFetchMore, () => {
         fetchMore({
             variables: {
-                getTweetInput: {
+                tweetsInput: {
                     limit: FETCH_LIMIT,
-                    afterCursor: data?.getTweet.cursor.afterCursor ?? null,
+                    afterCursor: data?.tweets.cursor.afterCursor ?? null,
                 },
             },
         })
     })
 
     useEffect(() => {
-        getTweetQueryLazy()
+        getTweetQueryLazy({
+            variables: {
+                tweetsInput: {
+                    limit: FETCH_LIMIT,
+                    beforeCursor: null,
+                    afterCursor: null,
+                },
+            },
+        })
         return () => {
             cache.evict({
                 id: 'ROOT_QUERY',
@@ -52,13 +56,11 @@ export default function HomePage() {
 
     return (
         <div className="container px-2 md:px-10 lg:px-20 mx-auto py-6 flex gap-6 ">
-            <div className="flex-grow">
+            <div className="flex-1">
                 <TweetInput />
                 <div className="mt-6 space-y-6 pb-6" ref={tweetListRef}>
-                    {data?.getTweet.tweets.map((tweet) => (
-                        <div key={tweet.id}>
-                            <Tweet data={tweet} />
-                        </div>
+                    {data?.tweets.tweets.map((tweet) => (
+                        <Tweet key={tweet.id} data={tweet} />
                     ))}
                     {loading && (
                         <div className="flex items-center justify-center gap-2">
@@ -78,11 +80,11 @@ export default function HomePage() {
                     )}
                 </div>
             </div>
-            <div className="sticky hidden md:block top-6 max-w-[206px] lg:max-w-[306px] w-full h-fit space-y-6">
-                {!!topTweetedTagCount?.getTopTweetedTagCount.length && (
+            <div className="sticky hidden md:block top-6 w-[206px] lg:w-[306px] h-fit space-y-6">
+                {!!topTweetedTagCount?.topTweetedTagCount.length && (
                     <Card title={t('trend_for_you')}>
                         <div className="my-3 space-y-6">
-                            {topTweetedTagCount?.getTopTweetedTagCount.map(
+                            {topTweetedTagCount?.topTweetedTagCount.map(
                                 ({ id, name, count }) => (
                                     <div
                                         className="flex flex-col gap-2"

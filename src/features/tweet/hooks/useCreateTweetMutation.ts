@@ -2,8 +2,8 @@ import { useMutation } from '@apollo/client'
 
 import {
     CREATE_TWEET_MUTATION,
-    GET_TOP_TWEETED_TAG_COUNT,
-    GET_TWEET_QUERY,
+    TOP_TWEETED_TAG_COUNT_QUERY,
+    TWEETS_QUERY,
 } from 'graphqlClient/queries/tweetQuery'
 
 export const useCreateTweetMutation = () =>
@@ -20,9 +20,9 @@ export const useCreateTweetMutation = () =>
         }
     >(CREATE_TWEET_MUTATION, {
         refetchQueries: [
-            GET_TWEET_QUERY,
+            TWEETS_QUERY,
             'GetTweetQuery',
-            GET_TOP_TWEETED_TAG_COUNT,
-            'GetTopTweetedTagCount',
+            TOP_TWEETED_TAG_COUNT_QUERY,
+            'TopTweetedTagCountQuery',
         ],
     })

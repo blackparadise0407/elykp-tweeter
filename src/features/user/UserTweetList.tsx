@@ -3,7 +3,7 @@ import { useTranslation } from 'react-i18next'
 import { AiOutlineCheckCircle } from 'react-icons/ai'
 
 import { Spinner } from 'components'
-import { useGetTweetQuery } from 'features/tweet/hooks/useGetTweetQuery'
+import { useTweetsQuery } from 'features/tweet/hooks/useTweetsQuery'
 import Tweet from 'features/tweet/Tweet'
 import { cache } from 'graphqlClient'
 import { useInfiniteScroll } from 'hooks/useInfiniteScroll'
@@ -16,30 +16,34 @@ export default function UserTweetList() {
     const { t } = useTranslation()
     const { data: userData } = useGetUserFromUrl()
     const tweetListRef = useRef<HTMLDivElement>(null)
-    const [getTweetQueryLazy, { data, loading, fetchMore }] = useGetTweetQuery({
-        limit: FETCH_LIMIT,
-        beforeCursor: null,
-        afterCursor: null,
-        userId: userData?.getUser.id,
-    })
+    const [getTweetQueryLazy, { data, loading, fetchMore }] = useTweetsQuery()
     const canFetchMore = useMemo(
-        () => !!data?.getTweet.cursor.afterCursor,
-        [data?.getTweet.cursor.afterCursor],
+        () => !!data?.tweets.cursor.afterCursor,
+        [data?.tweets.cursor.afterCursor],
     )
 
     useInfiniteScroll(tweetListRef, loading, canFetchMore, () => {
         fetchMore({
             variables: {
-                getTweetInput: {
+                tweetsInput: {
                     limit: FETCH_LIMIT,
-                    afterCursor: data?.getTweet.cursor.afterCursor ?? null,
+                    afterCursor: data?.tweets.cursor.afterCursor ?? null,
                 },
             },
         })
     })
 
     useEffect(() => {
-        getTweetQueryLazy()
+        getTweetQueryLazy({
+            variables: {
+                tweetsInput: {
+                    limit: FETCH_LIMIT,
+                    beforeCursor: null,
+                    afterCursor: null,
+                    userId: userData?.user.id,
+                },
+            },
+        })
         return () => {
             cache.evict({
                 id: 'ROOT_QUERY',
@@ -50,7 +54,7 @@ export default function UserTweetList() {
 
     return (
         <div className="space-y-6 pb-12" ref={tweetListRef}>
-            {data?.getTweet.tweets.map((tweet) => (
+            {data?.tweets.tweets.map((tweet) => (
                 <Tweet key={tweet.id} data={tweet} />
             ))}
             {loading && (

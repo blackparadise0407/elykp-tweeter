@@ -30,16 +30,16 @@ import { useToast } from 'contexts/toast/ToastContext'
 import { useUploadFileMutation } from 'features/common/hooks/useUploadFileMutation'
 import { useCurrentUserQuery } from 'features/user/hooks/useCurrentUserQuery'
 
-import { useGetUserLazyQuery } from './hooks/useGetUserLazyQuery'
 import { useUpdateCurrentUserAvatarMutation } from './hooks/useUpdateCurrentUserAvatarMutation'
 import { useUpdateCurrentUserProfileMutation } from './hooks/useUpdateCurrentUserProfileMutation'
+import { useUserLazyQuery } from './hooks/useUserLazyQuery'
 
 export default function ProfilePage() {
     const { t } = useTranslation()
     const { enqueue } = useToast()
     const { username } = useParams<{ username: string }>()
     const { data: currentUserData } = useCurrentUserQuery()
-    const [getUserLazyQuery, { data, loading, error }] = useGetUserLazyQuery()
+    const [userLazyQuery, { data, loading, error }] = useUserLazyQuery()
     const [uploadFileMutation, { loading: uploadFileLoading }] =
         useUploadFileMutation()
     const [updateCurrentUserAvatarMutation, { loading: updateAvatarLoading }] =
@@ -52,7 +52,7 @@ export default function ProfilePage() {
     const textareaRef = useRef<HTMLTextAreaElement>(null)
 
     const isCurrentUser = useMemo(
-        () => currentUserData?.currentUser.id === data?.getUser.id,
+        () => currentUserData?.currentUser.id === data?.user.id,
         [currentUserData, data],
     )
 
@@ -60,8 +60,7 @@ export default function ProfilePage() {
         if (textareaRef.current && textareaRef.current.value) {
             try {
                 if (
-                    data?.getUser.profile.description ===
-                    textareaRef.current.value
+                    data?.user.profile.description === textareaRef.current.value
                 ) {
                     setIsEditingDesc(false)
                     return
@@ -85,8 +84,7 @@ export default function ProfilePage() {
         setIsEditingDesc(true)
         setTimeout(() => {
             if (textareaRef.current) {
-                textareaRef.current.value =
-                    data?.getUser.profile.description ?? ''
+                textareaRef.current.value = data?.user.profile.description ?? ''
             }
         }, 0)
     }
@@ -150,7 +148,7 @@ export default function ProfilePage() {
     )
 
     useEffect(() => {
-        getUserLazyQuery({ variables: { username } })
+        userLazyQuery({ variables: { username } })
     }, [username])
 
     if (loading) {
@@ -164,9 +162,9 @@ export default function ProfilePage() {
     if (error) {
         return <NotFound />
     }
-    if (!data?.getUser) return null
+    if (!data?.user) return null
 
-    const user = data.getUser
+    const user = data.user
 
     return (
         <Fragment>
@@ -305,7 +303,7 @@ export default function ProfilePage() {
                     </div>
                 </div>
             </div>
-            <Modal title={t('update_profile')} open={true}>
+            <Modal title={t('update_profile')} open={false}>
                 Profile update
             </Modal>
         </Fragment>
