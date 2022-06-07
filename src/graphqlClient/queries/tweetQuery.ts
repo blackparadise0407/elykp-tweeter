@@ -9,9 +9,9 @@ export const CREATE_TWEET_MUTATION = gql`
     }
 `
 
-export const GET_TWEET_QUERY = gql`
-    query GetTweetQuery($getTweetInput: GetTweetInput!) {
-        getTweet(getTweetInput: $getTweetInput) {
+export const TWEETS_QUERY = gql`
+    query TweetsQuery($tweetsInput: TweetsInput!) {
+        tweets(tweetsInput: $tweetsInput) {
             tweets {
                 id
                 text
@@ -35,9 +35,9 @@ export const GET_TWEET_QUERY = gql`
     }
 `
 
-export const GET_TOP_TWEETED_TAG_COUNT = gql`
-    query GetTopTweetedTagCount {
-        getTopTweetedTagCount {
+export const TOP_TWEETED_TAG_COUNT_QUERY = gql`
+    query TopTweetedTagCountQuery {
+        topTweetedTagCount {
             id
             name
             count

@@ -25,7 +25,7 @@ export const cache = new InMemoryCache({
     typePolicies: {
         Query: {
             fields: {
-                getTweet: {
+                tweets: {
                     keyArgs: false,
                     merge(existing, incoming) {
                         let tweets: Reference[] = []
