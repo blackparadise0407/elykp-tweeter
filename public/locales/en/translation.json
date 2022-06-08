@@ -15,7 +15,8 @@
         "password_must_contain_minimum_3_characters": "Password must contain minimum 3 characters",
         "password_must_contain_maximum_128_characters": "Password must contain maximum 128 characters",
         "email_must_be_valid_email": "Email must be valid email",
-        "full_name_required": "Full name is required"
+        "full_name_required": "Full name is required",
+        "uploaded_file_must_be_under_size": "Uploaded file must be under {{size}}Mb"
     },
     "home": "home",
     "explore": "explore",
@@ -54,5 +55,9 @@
     "full_name": "Full name",
     "description": "Description",
     "follow": "Follow",
-    "unfollow": "Unfollow"
+    "unfollow": "Unfollow",
+    "username_is_following": "{{username}} is following",
+    "username_follower": "{{username}}'s followers",
+    "edit_profile": "Edit profile",
+    "change_cover_photo": "Change cover photo"
 }

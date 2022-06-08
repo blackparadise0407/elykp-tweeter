@@ -86,9 +86,14 @@ export default function TweetInput() {
                     return
                 }
                 if (!isUnderLimitSize(file)) {
-                    enqueue(t('validation.file_too_large'), {
-                        variant: 'warning',
-                    })
+                    enqueue(
+                        t('validation.uploaded_file_must_be_under_size', {
+                            size: 3,
+                        }),
+                        {
+                            variant: 'warning',
+                        },
+                    )
                     return
                 }
                 try {
@@ -122,7 +127,7 @@ export default function TweetInput() {
         <Card title={t('tweet_something')}>
             <div className="flex gap-3">
                 {userData?.currentUser && (
-                    <Avatar userId={userData?.currentUser?.avatarId} />
+                    <Avatar avatarId={userData?.currentUser?.avatarId} />
                 )}
                 <div className="flex-grow">
                     <ReactTextareaAutosize

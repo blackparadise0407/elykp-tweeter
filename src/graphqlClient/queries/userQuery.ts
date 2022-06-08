@@ -74,6 +74,15 @@ export const FOLLOWERS_QUERY = gql`
     query FollowersQuery($userId: String!) {
         followers(userId: $userId) {
             id
+            user {
+                id
+                username
+                avatarId
+                followerCount
+                profile {
+                    description
+                }
+            }
         }
     }
 `
@@ -82,6 +91,15 @@ export const FOLLOWINGS_QUERY = gql`
     query FollowingsQuery($userId: String!) {
         followings(userId: $userId) {
             id
+            user {
+                id
+                username
+                avatarId
+                followerCount
+                profile {
+                    description
+                }
+            }
         }
     }
 `

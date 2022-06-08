@@ -6,7 +6,7 @@ import { AVATAR_PLACEHOLDER } from 'assets/images'
 type AvatarSize = 'lg' | 'sm' | 'base'
 
 interface AvatarProps {
-    userId?: string | null
+    avatarId?: string | null
     size?: AvatarSize
 }
 
@@ -23,7 +23,10 @@ const getClassFromSize = (s: AvatarSize) => {
 
 const URL = 'http://localhost:5000/api/attachment'
 
-export default memo(function Avatar({ userId, size = 'base' }: AvatarProps) {
+export default memo(function Avatar({
+    avatarId: userId,
+    size = 'base',
+}: AvatarProps) {
     return (
         <img
             className={clsx('rounded-lg', getClassFromSize(size))}

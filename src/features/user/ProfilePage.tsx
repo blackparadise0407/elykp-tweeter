@@ -24,6 +24,7 @@ import {
     Modal,
     NotFound,
     SideNavigation,
+    SimpleUserCard,
     Spinner,
     Textarea,
     TextField,
@@ -62,9 +63,13 @@ export default function ProfilePage() {
     ] = useUpdateCurrentUserProfileMutation()
     const [followMutation] = useFollowMutation()
     const [unfollowMutation] = useUnfollowMutation()
-    const [followingsLazyQuery] = useFollowingsLazyQuery()
-    const [followersLazyQuery] = useFollowersLazyQuery()
+    const [followingsLazyQuery, followingResult] = useFollowingsLazyQuery()
+    const [followersLazyQuery, followerResult] = useFollowersLazyQuery()
 
+    const [followList, setFollowList] = useState<{
+        data: Relationship[]
+        type: 'following' | 'follower' | undefined
+    }>({ data: [], type: undefined })
     const [isEditingProfile, setIsEditingProfile] = useState(false)
     const textareaRef = useRef<HTMLTextAreaElement>(null)
     const {
@@ -202,6 +207,38 @@ export default function ProfilePage() {
         }
     }
 
+    const getFollowings = async () => {
+        if (data?.user) {
+            try {
+                const res = await followingsLazyQuery({
+                    variables: { userId: data.user.id },
+                })
+                if (res.data?.followings?.length) {
+                    setFollowList({
+                        data: res.data.followings,
+                        type: 'following',
+                    })
+                }
+            } catch (e) {}
+        }
+    }
+
+    const getFollowers = async () => {
+        if (data?.user) {
+            try {
+                const res = await followersLazyQuery({
+                    variables: { userId: data.user.id },
+                })
+                if (res.data?.followers?.length) {
+                    setFollowList({
+                        data: res.data.followers,
+                        type: 'follower',
+                    })
+                }
+            } catch (e) {}
+        }
+    }
+
     useEffect(() => {
         userLazyQuery({ variables: { username } })
     }, [username])
@@ -281,21 +318,27 @@ export default function ProfilePage() {
                                 {user.username}
                             </span>
                             <div className="flex items-center gap-4 capitalize">
-                                <span className="font-medium text-xs md:text-sm whitespace-nowrap">
+                                <span
+                                    className="font-medium text-xs md:text-sm whitespace-nowrap text-neutral-500 dark:hover:text-white hover:text-black transition-colors cursor-pointer"
+                                    onClick={getFollowings}
+                                >
                                     <b className="text-black dark:text-white">
                                         {user.followingCount}
                                     </b>{' '}
-                                    <span className="text-neutral-500">
+                                    <span>
                                         {user.followingCount <= 1
                                             ? t('following')
                                             : t('followings')}
                                     </span>
                                 </span>
-                                <span className="font-medium text-xs md:text-sm whitespace-nowrap">
+                                <span
+                                    className="font-medium text-xs md:text-sm whitespace-nowra text-neutral-500 dark:hover:text-white dark:hover:text-black transition-colors cursor-pointer"
+                                    onClick={getFollowers}
+                                >
                                     <b className="text-black dark:text-white">
                                         {user.followerCount}
                                     </b>{' '}
-                                    <span className="text-neutral-500">
+                                    <span>
                                         {user.followerCount <= 1
                                             ? t('follower')
                                             : t('followers')}
@@ -318,22 +361,13 @@ export default function ProfilePage() {
                             {t('edit_profile')}
                         </Button>
                     ) : (
-                        <>
-                            <Button
-                                small
-                                icon={<AiOutlineUserAdd />}
-                                onClick={handleUnfollowUser}
-                            >
-                                {t('unfollow')}
-                            </Button>
-                            <Button
-                                small
-                                icon={<AiOutlineUserAdd />}
-                                onClick={handleFollowUser}
-                            >
-                                {t('follow')}
-                            </Button>
-                        </>
+                        <Button
+                            small
+                            icon={<AiOutlineUserAdd />}
+                            onClick={handleFollowUser}
+                        >
+                            {t('follow')}
+                        </Button>
                     )}
                 </div>
                 <div className="flex gap-6 mt-6 flex-col md:flex-row">
@@ -382,6 +416,29 @@ export default function ProfilePage() {
                         error={errors.description?.message}
                     />
                 </form>
+            </Modal>
+            <Modal
+                open={!!followList.data.length}
+                title={
+                    followList.type === 'follower'
+                        ? t('username_follower', {
+                              username: data?.user.username,
+                          })
+                        : t('username_is_following', {
+                              username: data?.user.username,
+                          })
+                }
+                onClose={() => setFollowList({ data: [], type: undefined })}
+                hasFooter={false}
+            >
+                {followList.data.map((following) => (
+                    <div
+                        className="border-b border-neutral-500 last:border-0"
+                        key={following.id}
+                    >
+                        <SimpleUserCard data={following.user} />
+                    </div>
+                ))}
             </Modal>
         </Fragment>
     )

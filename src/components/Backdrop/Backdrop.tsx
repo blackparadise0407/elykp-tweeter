@@ -1,5 +1,5 @@
 import clsx from 'clsx'
-import { memo, ReactNode } from 'react'
+import { memo, ReactNode, useEffect } from 'react'
 
 interface BackdropProps {
     children: ReactNode
@@ -12,6 +12,15 @@ export default memo(function Backdrop({
     centerChildren = false,
     onClick,
 }: BackdropProps) {
+    useEffect(() => {
+        const root = document.getElementById('root')
+        if (root) {
+            root.style.overflow = 'hidden'
+            return () => {
+                root.style.overflow = 'unset'
+            }
+        }
+    }, [])
     return (
         <div
             className={clsx(

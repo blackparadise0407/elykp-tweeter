@@ -13,6 +13,7 @@ export interface ButtonProps
     loading?: boolean
     type?: ButtonType
     small?: boolean
+    flat?: boolean
     onClick?: MouseEventHandler<HTMLButtonElement>
 }
 

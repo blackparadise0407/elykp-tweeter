@@ -51,7 +51,7 @@ export default function NavBar() {
                     <>
                         <Avatar
                             size="base"
-                            userId={data?.currentUser?.avatarId}
+                            avatarId={data?.currentUser?.avatarId}
                         />
 
                         <h6>{data.currentUser.username}</h6>

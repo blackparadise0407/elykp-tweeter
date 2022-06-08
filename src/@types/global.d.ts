@@ -15,6 +15,18 @@ declare global {
         followerCount: number
     }
 
+    interface Relationship {
+        id: number
+        user: User
+        userId: string
+        // followerId: string
+        // follower: User
+    }
+
+    // type FollowerRelationship = Omit<Relationship, 'userId' | 'user'>
+
+    // type FollowingRelationship = Omit<Relationship, 'followerId' | 'follower'>
+
     interface Profile {
         id: number
         fullName: string

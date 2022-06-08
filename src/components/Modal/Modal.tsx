@@ -14,6 +14,7 @@ interface ModalProps {
     cancelLabel?: ReactNode
     okBtnProps?: ButtonProps
     cancelBtnProps?: ButtonProps
+    hasFooter?: boolean
     onClose?: () => void
     onOk?: () => void
 }
@@ -26,6 +27,7 @@ export default memo(function Modal({
     cancelLabel,
     cancelBtnProps,
     okBtnProps,
+    hasFooter = true,
     onClose,
     onOk,
 }: ModalProps) {
@@ -51,26 +53,30 @@ export default memo(function Modal({
                 )}
                 <Divider className="my-2" />
                 <div className="overflow-y-auto max-h-[80vh]">{children}</div>
-                <Divider className="my-2" />
-                <div className="flex justify-end gap-2">
-                    <Button
-                        small
-                        type="link"
-                        className="capitalize"
-                        onClick={onClose}
-                        {...cancelBtnProps}
-                    >
-                        {cancelLabel ? cancelLabel : t('cancel')}
-                    </Button>
-                    <Button
-                        small
-                        className="capitalize"
-                        onClick={onOk}
-                        {...okBtnProps}
-                    >
-                        {okLabel ? okLabel : t('confirm')}
-                    </Button>
-                </div>
+                {hasFooter && (
+                    <>
+                        <Divider className="my-2" />
+                        <div className="flex justify-end gap-2">
+                            <Button
+                                small
+                                type="link"
+                                className="capitalize"
+                                onClick={onClose}
+                                {...cancelBtnProps}
+                            >
+                                {cancelLabel ? cancelLabel : t('cancel')}
+                            </Button>
+                            <Button
+                                small
+                                className="capitalize"
+                                onClick={onOk}
+                                {...okBtnProps}
+                            >
+                                {okLabel ? okLabel : t('confirm')}
+                            </Button>
+                        </div>
+                    </>
+                )}
             </div>
         </Backdrop>
     )
