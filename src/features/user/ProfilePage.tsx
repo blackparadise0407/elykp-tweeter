@@ -332,7 +332,7 @@ export default function ProfilePage() {
                                     </span>
                                 </span>
                                 <span
-                                    className="font-medium text-xs md:text-sm whitespace-nowra text-neutral-500 dark:hover:text-white dark:hover:text-black transition-colors cursor-pointer"
+                                    className="font-medium text-xs md:text-sm whitespace-nowra text-neutral-500 dark:hover:text-white hover:text-black transition-colors cursor-pointer"
                                     onClick={getFollowers}
                                 >
                                     <b className="text-black dark:text-white">
