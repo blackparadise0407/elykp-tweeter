@@ -11,6 +11,7 @@ export const CURRENT_USER_QUERY = gql`
             profileId
             avatarId
             profile {
+                id
                 fullName
                 description
                 coverPhotoId
@@ -28,6 +29,7 @@ export const USER_QUERY = gql`
             profileId
             avatarId
             profile {
+                id
                 fullName
                 description
                 coverPhotoId
@@ -80,6 +82,7 @@ export const FOLLOWERS_QUERY = gql`
                 avatarId
                 followerCount
                 profile {
+                    id
                     description
                 }
             }
@@ -97,6 +100,7 @@ export const FOLLOWINGS_QUERY = gql`
                 avatarId
                 followerCount
                 profile {
+                    id
                     description
                 }
             }

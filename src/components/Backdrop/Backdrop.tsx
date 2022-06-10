@@ -13,11 +13,13 @@ export default memo(function Backdrop({
     onClick,
 }: BackdropProps) {
     useEffect(() => {
-        const root = document.getElementById('root')
-        if (root) {
-            root.style.overflow = 'hidden'
+        const main = document.getElementById('main')
+        if (main) {
+            main.style.overflow = 'hidden'
+            main.style.height = '100vh'
             return () => {
-                root.style.overflow = 'unset'
+                main.style.height = 'auto'
+                main.style.overflow = 'unset'
             }
         }
     }, [])

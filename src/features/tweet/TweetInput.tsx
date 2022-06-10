@@ -79,23 +79,6 @@ export default function TweetInput() {
     const handleUploadFile = useCallback(
         async (file: File) => {
             if (userData?.currentUser) {
-                if (!isValidMimeType(file)) {
-                    enqueue(t('validation.file_type_not_supported'), {
-                        variant: 'warning',
-                    })
-                    return
-                }
-                if (!isUnderLimitSize(file)) {
-                    enqueue(
-                        t('validation.uploaded_file_must_be_under_size', {
-                            size: 3,
-                        }),
-                        {
-                            variant: 'warning',
-                        },
-                    )
-                    return
-                }
                 try {
                     const { data } = await uploadFileMutation({
                         variables: {
@@ -161,6 +144,7 @@ export default function TweetInput() {
                         <ImageCropper
                             aspect={16 / 9}
                             loading={fileLoading}
+                            sizeLimit={3 * 1000 * 1000}
                             onConfirm={handleUploadFile}
                         >
                             <AiOutlinePicture className="cursor-pointer text-lg text-blue-500" />

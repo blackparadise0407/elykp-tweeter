@@ -59,5 +59,7 @@
     "username_is_following": "{{username}} is following",
     "username_follower": "{{username}}'s followers",
     "edit_profile": "Edit profile",
-    "change_cover_photo": "Change cover photo"
+    "change_cover_photo": "Change cover photo",
+    "update_profile_successfully": "Update profile successfully",
+    "update_cover_photo_successfuly": "Update cover photo successfully"
 }

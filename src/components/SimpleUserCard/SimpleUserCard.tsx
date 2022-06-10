@@ -9,6 +9,7 @@ interface SimpleUserCardProps {
 }
 
 export default function SimpleUserCard({ data }: SimpleUserCardProps) {
+    console.count('SimpleUserCard')
     const { t } = useTranslation()
     const {
         id,
@@ -23,7 +24,7 @@ export default function SimpleUserCard({ data }: SimpleUserCardProps) {
                 <Avatar avatarId={avatarId} />
                 <div className="flex flex-col justify-between">
                     <h5 className="dark:text-white">{username}</h5>
-                    <span className="text-xs text-neutral-300 font-medium">
+                    <span className="text-xs text-gray-800 dark:text-gray-300 font-medium">
                         {followerCount}{' '}
                         {followerCount <= 1 ? t('follower') : t('followers')}
                     </span>
@@ -34,7 +35,7 @@ export default function SimpleUserCard({ data }: SimpleUserCardProps) {
                 </Button>
             </div>
             {description && (
-                <p className="mt-4 text-sm font-medium text-neutral-300">
+                <p className="mt-4 text-sm font-medium text-gray-800 dark:text-gray-300">
                     {description}
                 </p>
             )}

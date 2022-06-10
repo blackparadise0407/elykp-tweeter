@@ -16,6 +16,8 @@ import ReactCrop, {
 } from 'react-image-crop'
 
 import { Modal } from 'components'
+import { useToast } from 'contexts/toast'
+import { isUnderLimitSize, isValidMimeType } from 'helpers/file'
 import { useDebounceEffect } from 'hooks/useDebounceEffect'
 
 import { canvasPreview } from './canvasPreview'
@@ -26,6 +28,7 @@ interface ImageCropperProps {
     aspect?: number
     children: ReactNode
     loading?: boolean
+    sizeLimit?: number
     onConfirm?: (file: File) => void
 }
 
@@ -53,9 +56,11 @@ export default memo(function ImageCropper({
     aspect = 1 / 1,
     children,
     loading = false,
+    sizeLimit, // 3 Mb
     onConfirm = () => {},
 }: ImageCropperProps) {
     const { t } = useTranslation()
+    const { enqueue } = useToast()
     const [imgSrc, setImgSrc] = useState('')
     const previewCanvasRef = useRef<HTMLCanvasElement>(null)
     const imgRef = useRef<HTMLImageElement>(null)
@@ -66,6 +71,27 @@ export default memo(function ImageCropper({
 
     function onSelectFile(e: React.ChangeEvent<HTMLInputElement>) {
         if (e.target.files?.length) {
+            const file = e.target.files[0]
+            if (!isValidMimeType(file)) {
+                enqueue(t('validation.file_type_not_supported'), {
+                    variant: 'warning',
+                })
+                return
+            }
+            if (
+                typeof sizeLimit !== 'undefined' &&
+                !isUnderLimitSize(file, sizeLimit)
+            ) {
+                enqueue(
+                    t('validation.uploaded_file_must_be_under_size', {
+                        size: sizeLimit / 1000000,
+                    }),
+                    {
+                        variant: 'warning',
+                    },
+                )
+                return
+            }
             setCrop(undefined)
             const reader = new FileReader()
             reader.addEventListener('load', () =>

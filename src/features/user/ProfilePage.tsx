@@ -32,6 +32,7 @@ import {
 import { useToast } from 'contexts/toast/ToastContext'
 import { useUploadFileMutation } from 'features/common/hooks/useUploadFileMutation'
 import { useCurrentUserQuery } from 'features/user/hooks/useCurrentUserQuery'
+import { cache } from 'graphqlClient'
 
 import { useFollowersLazyQuery } from './hooks/useFollowersLazyQuery'
 import { useFollowingsLazyQuery } from './hooks/useFollowingsLazyQuery'
@@ -75,6 +76,7 @@ export default function ProfilePage() {
     const {
         formState: { errors },
         register,
+        setValue,
         handleSubmit,
     } = useForm<ProfileUpdateForm>({
         resolver: yupResolver(profileUpdateSchema),
@@ -100,7 +102,7 @@ export default function ProfilePage() {
                         },
                     },
                 })
-                enqueue(t('update_profile_success'), {
+                enqueue(t('update_profile_successfully'), {
                     variant: 'success',
                 })
             } catch (e) {}
@@ -164,7 +166,7 @@ export default function ProfilePage() {
                                 },
                             },
                         })
-                        enqueue(t('update_cover_photo_success'), {
+                        enqueue(t('update_cover_photo_successfuly'), {
                             variant: 'success',
                         })
                     }
@@ -175,7 +177,21 @@ export default function ProfilePage() {
     )
 
     const handleUpdateProfile = () => {
-        handleSubmit((data) => {})()
+        handleSubmit(async (data) => {
+            try {
+                await updateCurrentUserProfileMutation({
+                    variables: {
+                        updateCurrentUserProfileInput: {
+                            ...data,
+                        },
+                    },
+                })
+                setIsEditingProfile(false)
+                enqueue(t('update_profile_successfully'))
+            } catch (e: any) {
+                enqueue(e?.message)
+            }
+        })()
     }
 
     const handleCloseUpdateModal = useCallback(
@@ -242,6 +258,13 @@ export default function ProfilePage() {
     useEffect(() => {
         userLazyQuery({ variables: { username } })
     }, [username])
+
+    useEffect(() => {
+        if (data?.user) {
+            setValue('description', data.user.profile.description)
+            setValue('fullName', data.user.profile.fullName)
+        }
+    }, [data])
 
     if (loading) {
         return (
@@ -433,7 +456,7 @@ export default function ProfilePage() {
             >
                 {followList.data.map((following) => (
                     <div
-                        className="border-b border-neutral-500 last:border-0"
+                        className="border-b border-gray-300 dark:border-neutral-500 last:border-0"
                         key={following.id}
                     >
                         <SimpleUserCard data={following.user} />
