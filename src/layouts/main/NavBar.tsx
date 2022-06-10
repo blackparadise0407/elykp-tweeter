@@ -2,7 +2,7 @@ import clsx from 'clsx'
 import { useTranslation } from 'react-i18next'
 import { Link, NavLink } from 'react-router-dom'
 
-import { Avatar } from 'components'
+import { Avatar, Dropdown } from 'components'
 import { useCurrentUserQuery } from 'features/user/hooks/useCurrentUserQuery'
 
 const items = [
@@ -46,18 +46,18 @@ export default function NavBar() {
                     </NavLink>
                 ))}
             </div>
-            <div className="flex items-center gap-3 justify-self-end py-5">
-                {data?.currentUser && (
-                    <>
+            {data?.currentUser && (
+                <Dropdown items={[{ key: 0, label: 'Ok' }]}>
+                    <div className="flex items-center gap-3 justify-self-end py-5">
                         <Avatar
                             size="base"
                             avatarId={data?.currentUser?.avatarId}
                         />
 
                         <h6>{data.currentUser.username}</h6>
-                    </>
-                )}
-            </div>
+                    </div>
+                </Dropdown>
+            )}
         </nav>
     )
 }
