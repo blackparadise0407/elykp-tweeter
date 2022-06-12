@@ -5,6 +5,7 @@ interface BackdropProps {
     children: ReactNode
     centerChildren?: boolean
     transparent?: boolean
+    scrollable?: boolean
     onClick?: () => void
 }
 
@@ -12,11 +13,12 @@ export default memo(function Backdrop({
     children,
     centerChildren = false,
     transparent = false,
+    scrollable = false,
     onClick,
 }: BackdropProps) {
     useEffect(() => {
         const main = document.getElementById('main')
-        if (main) {
+        if (main && !scrollable) {
             main.style.overflow = 'hidden'
             main.style.height = '100vh'
             return () => {
@@ -25,6 +27,7 @@ export default memo(function Backdrop({
             }
         }
     }, [])
+
     return (
         <div
             className={clsx(
