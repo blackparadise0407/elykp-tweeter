@@ -24,7 +24,7 @@ root.render(
                         fallback={
                             <motion.div className="">
                                 <Backdrop centerChildren>
-                                    <Spinner />
+                                    <Spinner size="lg" />
                                 </Backdrop>
                             </motion.div>
                         }
