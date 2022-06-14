@@ -11,7 +11,6 @@ import { useDeleleteFileMutation } from 'features/common/hooks/useDeleteFileMuta
 import { useUploadFileMutation } from 'features/common/hooks/useUploadFileMutation'
 import { useCreateTweetMutation } from 'features/tweet/hooks/useCreateTweetMutation'
 import { useCurrentUserQuery } from 'features/user/hooks/useCurrentUserQuery'
-import { isUnderLimitSize, isValidMimeType } from 'helpers/file'
 import { extractTags } from 'helpers/string'
 
 const tweetPrivacyOpts = [
