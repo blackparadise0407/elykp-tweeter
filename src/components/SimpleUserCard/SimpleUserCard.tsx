@@ -8,7 +8,7 @@ import { Button } from 'components/Button'
 interface SimpleUserCardProps {
     data: User
 }
-
+// TODO: Refactor user card
 export default function SimpleUserCard({ data }: SimpleUserCardProps) {
     const { t } = useTranslation()
     const {
