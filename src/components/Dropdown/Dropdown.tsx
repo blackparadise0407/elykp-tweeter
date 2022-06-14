@@ -1,64 +1,64 @@
-import {
-    CSSProperties,
-    memo,
-    ReactNode,
-    useEffect,
-    useRef,
-    useState,
-} from 'react'
+import { CSSProperties, memo, useEffect, useRef, useState } from 'react'
 
 import { Backdrop } from 'components/Backdrop'
 import { useEventListener } from 'hooks/useEventListener'
 
-interface DropdownItem {
-    key: number
-    label: ReactNode
-    icon?: ReactNode
-}
-
-interface DropdownProps {
-    children: ReactNode
-    items: DropdownItem[]
-}
+import { DropdownProps } from '.'
 
 export default memo(function Dropdown({ children, items }: DropdownProps) {
     const wrapperRef = useRef<HTMLDivElement>(null)
+    const menuRef = useRef<HTMLDivElement>(null)
     const [open, setOpen] = useState(false)
     const [style, setStyle] = useState<CSSProperties>({
-        position: 'fixed',
+        position: 'absolute',
     })
 
     useEventListener(
         'click',
         () => {
-            setOpen(true)
+            setOpen((o) => !o)
         },
         wrapperRef,
     )
 
     useEffect(() => {
-        if (wrapperRef.current) {
+        if (wrapperRef.current && menuRef.current) {
+            const { innerWidth } = window
             const { offsetTop, offsetLeft, clientHeight } = wrapperRef.current
+            const { clientWidth } = menuRef.current
+            if (offsetLeft + clientWidth >= innerWidth) {
+                console.log('wow')
+            }
             setStyle((s) => ({
                 ...s,
                 top: `${offsetTop + clientHeight}px`,
-                left: `${offsetLeft}px`,
+                left: `${offsetLeft - clientWidth}px`,
             }))
         }
-    }, [])
+    }, [menuRef.current])
 
     return (
         <>
-            <div ref={wrapperRef}>{children}</div>
+            <div ref={wrapperRef}>
+                {typeof children === 'function'
+                    ? children({ isOpen: open })
+                    : children}
+            </div>
             {open && (
-                <Backdrop transparent onClick={() => setOpen(false)}>
+                <Backdrop onClick={() => setOpen(false)} transparent>
                     <div
-                        className="bg-white dark:bg-neutral-800 p-3 shadow rounded-lg"
+                        ref={menuRef}
                         style={style}
+                        className="bg-white dark:bg-neutral-800 py-3.5 px-3 min-w-[200px] shadow rounded-lg"
                         onClick={(e) => e.stopPropagation()}
                     >
                         {items.map(({ label, key }) => (
-                            <div key={key}>{label}</div>
+                            <div
+                                className="p-3 text-xs cursor-pointer hover:bg-neutral-100 dark:hover:bg-neutral-600 rounded-lg"
+                                key={key}
+                            >
+                                {label}
+                            </div>
                         ))}
                     </div>
                 </Backdrop>
