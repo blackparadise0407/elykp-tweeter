@@ -80,6 +80,12 @@ declare global {
         enqueue: (message?: string, opts?: ToastOptions) => void
         remove: (id: number) => void
     }
+
+    interface TopFollowedUser {
+        user: User
+        profile: Profile
+        count: number
+    }
 }
 
 export {}

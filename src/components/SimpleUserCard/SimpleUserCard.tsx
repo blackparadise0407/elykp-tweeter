@@ -1,5 +1,6 @@
 import { useTranslation } from 'react-i18next'
 import { AiOutlineUserAdd } from 'react-icons/ai'
+import { Link } from 'react-router-dom'
 
 import { Avatar } from 'components/Avatar'
 import { Button } from 'components/Button'
@@ -9,7 +10,6 @@ interface SimpleUserCardProps {
 }
 
 export default function SimpleUserCard({ data }: SimpleUserCardProps) {
-    console.count('SimpleUserCard')
     const { t } = useTranslation()
     const {
         id,
@@ -20,10 +20,17 @@ export default function SimpleUserCard({ data }: SimpleUserCardProps) {
     } = data
     return (
         <div className="py-3">
-            <div className="flex items-center gap-4">
+            <div className="flex items-center flex-wrap gap-4">
                 <Avatar avatarId={avatarId} />
                 <div className="flex flex-col justify-between">
-                    <h5 className="dark:text-white">{username}</h5>
+                    <span>
+                        <Link
+                            to={`/${username}`}
+                            className="font-semibold text-base text-black hover:text-black dark:text-white hover:dark:text-white hover:underline cursor-pointer"
+                        >
+                            {username}
+                        </Link>
+                    </span>
                     <span className="text-xs text-gray-800 dark:text-gray-300 font-medium">
                         {followerCount}{' '}
                         {followerCount <= 1 ? t('follower') : t('followers')}

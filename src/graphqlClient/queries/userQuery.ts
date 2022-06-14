@@ -107,3 +107,20 @@ export const FOLLOWINGS_QUERY = gql`
         }
     }
 `
+
+export const TOP_FOLLOWED_USERS_QUERY = gql`
+    query TopFollowedUsersQuery {
+        topFollowedUsers {
+            user {
+                id
+                avatarId
+                username
+            }
+            profile {
+                description
+                coverPhotoId
+            }
+            count
+        }
+    }
+`

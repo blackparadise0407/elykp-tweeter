@@ -4,6 +4,7 @@ import { AiOutlineCheckCircle } from 'react-icons/ai'
 import { Link } from 'react-router-dom'
 
 import { Card, Spinner } from 'components'
+import { useTopFollowedUsersQuery } from 'features/user/hooks/useTopFollowedUsersQuery'
 import { cache } from 'graphqlClient'
 import { useInfiniteScroll } from 'hooks/useInfiniteScroll'
 
@@ -11,6 +12,7 @@ import { useTopTweetedTagCountQuery } from './hooks/useTopTweetedTagCountQuery'
 import { useTweetsQuery } from './hooks/useTweetsQuery'
 import Tweet from './Tweet'
 import TweetInput from './TweetInput'
+import UserCard from './UserCard'
 
 const FETCH_LIMIT = 5
 
@@ -18,6 +20,7 @@ export default function HomePage() {
     const { t } = useTranslation()
     const [getTweetQueryLazy, { data, loading, fetchMore }] = useTweetsQuery()
     const { data: topTweetedTagCount } = useTopTweetedTagCountQuery()
+    const { data: topFollowedUsers } = useTopFollowedUsersQuery()
     const tweetListRef = useRef<HTMLDivElement>(null)
 
     const canFetchMore = useMemo(
@@ -108,7 +111,18 @@ export default function HomePage() {
                         </div>
                     </Card>
                 )}
-                <Card title={t('who_to_follow')}></Card>
+                {!!topFollowedUsers?.topFollowedUsers.length && (
+                    <Card title={t('who_to_follow')}>
+                        {topFollowedUsers?.topFollowedUsers.map((data) => (
+                            <div
+                                key={data.user.id}
+                                className="border-b border-gray-300 dark:border-neutral-500 last:border-0"
+                            >
+                                <UserCard data={data} />
+                            </div>
+                        ))}
+                    </Card>
+                )}
             </div>
         </div>
     )
