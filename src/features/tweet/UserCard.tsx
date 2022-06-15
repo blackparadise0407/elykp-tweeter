@@ -33,9 +33,11 @@ export default function UserCard({ data }: UserCardProps) {
                     {t('follow')}
                 </Button>
             </div>
-            <p className="my-4 text-sm text-gray-800 dark:text-gray-300 line-clamp-2">
-                {profile.description}
-            </p>
+            {profile.description && (
+                <p className="my-4 text-sm text-gray-800 dark:text-gray-300 line-clamp-2">
+                    {profile.description}
+                </p>
+            )}
             {profile.coverPhotoId && (
                 <div
                     className="w-full h-[80px] rounded-lg"
