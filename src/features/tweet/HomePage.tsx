@@ -1,10 +1,13 @@
-import { useEffect, useMemo, useRef } from 'react'
+import { useCallback, useEffect, useMemo, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import { AiOutlineCheckCircle } from 'react-icons/ai'
 import { Link } from 'react-router-dom'
 
 import { Card, Spinner } from 'components'
-import { useTopFollowedUsersQuery } from 'features/user/hooks/useTopFollowedUsersQuery'
+import { useToast } from 'contexts/toast'
+import { useCurrentUserQuery } from 'features/user/hooks/useCurrentUserQuery'
+import { useFollowMutation } from 'features/user/hooks/useFollowMutation copy'
+import { useTopFollowedUsersLazyQuery } from 'features/user/hooks/useTopFollowedUsersLazyQuery'
 import { cache } from 'graphqlClient'
 import { useInfiniteScroll } from 'hooks/useInfiniteScroll'
 
@@ -18,9 +21,14 @@ const FETCH_LIMIT = 5
 
 export default function HomePage() {
     const { t } = useTranslation()
+    const { enqueue } = useToast()
     const [getTweetQueryLazy, { data, loading, fetchMore }] = useTweetsQuery()
     const { data: topTweetedTagCount } = useTopTweetedTagCountQuery()
-    const { data: topFollowedUsers } = useTopFollowedUsersQuery()
+    const { data: currentUser } = useCurrentUserQuery()
+    const [topFollowedUsersLazy, { data: topFollowedUsers }] =
+        useTopFollowedUsersLazyQuery()
+    const [followMutation] = useFollowMutation()
+
     const tweetListRef = useRef<HTMLDivElement>(null)
 
     const canFetchMore = useMemo(
@@ -39,6 +47,18 @@ export default function HomePage() {
         })
     })
 
+    const handleFollowUser = useCallback(async (followingId: string) => {
+        try {
+            await followMutation({
+                variables: {
+                    followingId,
+                },
+            })
+        } catch (e: any) {
+            enqueue(e?.message, { variant: 'error' })
+        }
+    }, [])
+
     useEffect(() => {
         getTweetQueryLazy({
             variables: {
@@ -56,6 +76,16 @@ export default function HomePage() {
             })
         }
     }, [])
+
+    useEffect(() => {
+        if (currentUser?.currentUser) {
+            topFollowedUsersLazy({
+                variables: {
+                    userId: currentUser.currentUser.id,
+                },
+            })
+        }
+    }, [currentUser?.currentUser])
 
     return (
         <div className="container px-2 md:px-10 lg:px-20 mx-auto py-6 flex gap-6 ">
@@ -118,7 +148,10 @@ export default function HomePage() {
                                 key={data.user.id}
                                 className="border-b border-gray-300 dark:border-neutral-500 last:border-0"
                             >
-                                <UserCard data={data} />
+                                <UserCard
+                                    data={data}
+                                    onFollow={handleFollowUser}
+                                />
                             </div>
                         ))}
                     </Card>

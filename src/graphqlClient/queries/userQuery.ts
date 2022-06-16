@@ -109,8 +109,8 @@ export const FOLLOWINGS_QUERY = gql`
 `
 
 export const TOP_FOLLOWED_USERS_QUERY = gql`
-    query TopFollowedUsersQuery {
-        topFollowedUsers {
+    query TopFollowedUsersQuery($userId: String!) {
+        topFollowedUsers(userId: $userId) {
             user {
                 id
                 avatarId
