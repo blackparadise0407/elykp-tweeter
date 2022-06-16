@@ -1,11 +1,17 @@
 import clsx from 'clsx'
-import { t as translate } from 'i18next'
-import { useMemo } from 'react'
+import { useCallback, useMemo } from 'react'
 import { useTranslation } from 'react-i18next'
 import { AiFillCaretDown, AiFillCaretUp } from 'react-icons/ai'
-import { Link, NavLink } from 'react-router-dom'
+import {
+    IoPersonCircle,
+    IoPeople,
+    IoLogOutOutline,
+    IoSettingsSharp,
+} from 'react-icons/io5'
+import { Link, NavLink, useNavigate } from 'react-router-dom'
 
 import { Avatar, Dropdown, DropdownItem } from 'components'
+import { ACCESS_TOKEN } from 'constants/storage'
 import { useCurrentUserQuery } from 'features/user/hooks/useCurrentUserQuery'
 
 const items = [
@@ -17,31 +23,47 @@ const items = [
 export default function NavBar() {
     const { t } = useTranslation()
     const { data } = useCurrentUserQuery()
+    const navigate = useNavigate()
 
-    const dropdownItems: DropdownItem[] = useMemo(
+    const handleLogout = useCallback(async () => {
+        sessionStorage.removeItem(ACCESS_TOKEN)
+        window.location.reload()
+    }, [])
+
+    const dropdownItems = useMemo<DropdownItem[]>(
         () => [
             {
                 key: 1,
                 label: t('my_profile'),
+                icon: <IoPersonCircle />,
+                cb() {
+                    navigate(`/${data?.currentUser.username}`)
+                },
             },
             {
                 key: 2,
                 label: t('group_chat'),
+                icon: <IoPeople />,
             },
             {
                 key: 3,
                 label: t('settings'),
+                icon: <IoSettingsSharp />,
             },
             {
                 key: 4,
                 label: t('logout'),
+                icon: <IoLogOutOutline />,
+                cb() {
+                    handleLogout()
+                },
             },
         ],
-        [],
+        [data?.currentUser, handleLogout],
     )
 
     return (
-        <nav className="bg-white dark:bg-neutral-800 text-black dark:text-white px-2 md:px-10 lg:px-20 flex justify-between items-center">
+        <nav className="bg-white dark:bg-neutral-800 text-black dark:text-white px-2 md:px-10 lg:px-20 flex justify-between items-center z-[900]">
             <Link
                 to="/"
                 className="text-black dark:text-white font-semibold justify-self-start py-5 hover:text-black hover:dark:text-white"

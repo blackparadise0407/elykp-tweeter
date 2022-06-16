@@ -6,11 +6,18 @@ import { Avatar, Button } from 'components'
 
 interface UserCardProps {
     data: TopFollowedUser
+    onFollow?: (followingId: string) => void
 }
 
-export default function UserCard({ data }: UserCardProps) {
+export default function UserCard({ data, onFollow = () => {} }: UserCardProps) {
     const { t } = useTranslation()
+
     const { user, count, profile } = data
+
+    const handleFollow = () => {
+        onFollow(user.id)
+    }
+
     return (
         <div className="py-5">
             <div className="flex items-center flex-wrap gap-4">
@@ -29,7 +36,12 @@ export default function UserCard({ data }: UserCardProps) {
                     </p>
                 </div>
                 <div className="flex-grow"></div>
-                <Button small flat icon={<AiOutlineUserAdd />}>
+                <Button
+                    small
+                    flat
+                    icon={<AiOutlineUserAdd />}
+                    onClick={handleFollow}
+                >
                     {t('follow')}
                 </Button>
             </div>

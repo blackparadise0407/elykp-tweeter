@@ -16,7 +16,7 @@ import {
 } from 'react-icons/ai'
 import { Outlet, useParams } from 'react-router-dom'
 
-import { AVATAR_PLACEHOLDER, BANNER_IMAGE_PLACEHOLDER } from 'assets/images'
+import { AVATAR_PLACEHOLDER } from 'assets/images'
 import {
     Backdrop,
     Button,
@@ -32,7 +32,6 @@ import {
 import { useToast } from 'contexts/toast/ToastContext'
 import { useUploadFileMutation } from 'features/common/hooks/useUploadFileMutation'
 import { useCurrentUserQuery } from 'features/user/hooks/useCurrentUserQuery'
-import { cache } from 'graphqlClient'
 
 import { useFollowersLazyQuery } from './hooks/useFollowersLazyQuery'
 import { useFollowingsLazyQuery } from './hooks/useFollowingsLazyQuery'
@@ -64,8 +63,8 @@ export default function ProfilePage() {
     ] = useUpdateCurrentUserProfileMutation()
     const [followMutation] = useFollowMutation()
     const [unfollowMutation] = useUnfollowMutation()
-    const [followingsLazyQuery, followingResult] = useFollowingsLazyQuery()
-    const [followersLazyQuery, followerResult] = useFollowersLazyQuery()
+    const [followingsLazyQuery] = useFollowingsLazyQuery()
+    const [followersLazyQuery] = useFollowersLazyQuery()
 
     const [followList, setFollowList] = useState<{
         data: Relationship[]
@@ -86,28 +85,6 @@ export default function ProfilePage() {
         () => currentUserData?.currentUser.id === data?.user.id,
         [currentUserData, data],
     )
-
-    const updateDescription = async () => {
-        if (textareaRef.current && textareaRef.current.value) {
-            try {
-                if (
-                    data?.user.profile.description === textareaRef.current.value
-                ) {
-                    return
-                }
-                await updateCurrentUserProfileMutation({
-                    variables: {
-                        updateCurrentUserProfileInput: {
-                            description: textareaRef.current.value,
-                        },
-                    },
-                })
-                enqueue(t('update_profile_successfully'), {
-                    variant: 'success',
-                })
-            } catch (e) {}
-        }
-    }
 
     // const handleClickEdit = () => {
     //     setTimeout(() => {
@@ -284,9 +261,11 @@ export default function ProfilePage() {
     return (
         <Fragment>
             <div
-                className="relative h-[280px] w-full"
+                className="relative h-[280px] w-full bg-neutral-300 dark:bg-neutral-900"
                 style={{
-                    backgroundImage: `url(http://localhost:5000/api/attachment/${user?.profile.coverPhotoId}), url(${BANNER_IMAGE_PLACEHOLDER})`,
+                    backgroundImage: user?.profile.coverPhotoId
+                        ? `url(http://localhost:5000/api/attachment/${user?.profile.coverPhotoId})`
+                        : undefined,
                     backgroundRepeat: 'no-repeat',
                     backgroundPosition: 'center',
                     backgroundSize: 'cover',
@@ -338,7 +317,7 @@ export default function ProfilePage() {
                     <div className="overflow-hidden">
                         <div className="flex items-center flex-col md:flex-row gap-1 md:gap-6 flex-wrap">
                             <span className="truncate text-2xl font-bold text-neutral-800 dark:text-white">
-                                {user.username}
+                                {user.profile.fullName || user.username}
                             </span>
                             <div className="flex items-center gap-4 capitalize">
                                 <span
